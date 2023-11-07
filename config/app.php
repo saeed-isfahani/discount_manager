@@ -169,7 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         L5Swagger\L5SwaggerServiceProvider::class,
-
+        Kavenegar\Laravel\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -185,6 +185,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Kavenegar' => Kavenegar\Laravel\Facade::class,
     ])->toArray(),
 
 ];
