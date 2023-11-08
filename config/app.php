@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         L5Swagger\L5SwaggerServiceProvider::class,
         Kavenegar\Laravel\ServiceProvider::class,
+        App\Providers\ResponseServiceProvider::class,
     ])->toArray(),
 
     /*
