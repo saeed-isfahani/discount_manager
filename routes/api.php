@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
+        Route::get('/login/send-verify',[LoginController::class,'sendVerify'])->name('sendVerify');
         Route::get('/register/send-verify',[RegisterController::class,'sendVerify'])->name('sendVerify');
     });
 });
