@@ -1,6 +1,7 @@
 <?php
-namespace app\Enums\VerificationRequest;
-namespace app\Enums;
+namespace App\Enums\VerificationRequest;
+
+use App\Enums\Enum;
 
 enum VerificationRequestProviderEnum: string
 {

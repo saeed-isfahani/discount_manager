@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function ($table) {
             $table->string('first_name');
             $table->string('last_name');
-            $table->renameColumn('name', 'full_name')->change();
+            DB::statement('ALTER TABLE `users` CHANGE `name` `full_name` varchar(255);');
             $table->string('mobile')->unique();
             $table->string('password')->nullable()->change();
             $table->string('email')->nullable()->change();
@@ -29,7 +29,7 @@ return new class extends Migration
         Schema::table('users', function ($table) {
             $table->dropColumn('first_name');
             $table->dropColumn('last_name');
-            $table->renameColumn('full_name', 'name')->change();
+            DB::statement('ALTER TABLE `users` CHANGE `full_name` `name` varchar(255);');
             $table->string('mobile')->unique(false)->change();
             $table->dropColumn('mobile');
             $table->string('password')->nullable(false)->change();
