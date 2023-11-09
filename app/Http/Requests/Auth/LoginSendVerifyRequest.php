@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class LoginSendVerifyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class LoginSendVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => 'required|number|regex:/[0]{1}[0-9]{10}/',
+            'mobile' => 'required|regex:/[0]{1}[0-9]{10}/',
         ];
     }
 }
