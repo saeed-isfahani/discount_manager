@@ -28,7 +28,10 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
-        $user = User::where('mobile', $request->mobile)->firstOrFail();
+        $user = User::where('mobile', $request->mobile)->first();
+        if (!$user) {
+            return Response::status(404)->message(__('auth.messages.This user is not registered Please use the registration tab'))->send();
+        }
 
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
             ->whereCode($request->code)
@@ -58,7 +61,10 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
-        $user = User::where('mobile', $request->mobile)->firstOrFail();
+        $user = User::where('mobile', $request->mobile)->first();
+        if (!$user) {
+            return Response::status(404)->message(__('auth.messages.This user is not registered Please use the registration tab'))->send();
+        }
 
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
             ->whereNull('veriffication_at')
