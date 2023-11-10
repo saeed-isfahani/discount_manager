@@ -20,10 +20,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// if (auth()->guest()) {
+//     auth()->login(App\Models\User::first());
+// }
+
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::get('/login/send-verify',[LoginController::class,'sendVerify'])->name('sendVerify');
-        Route::get('/login/check-verify',[LoginController::class,'checkVerify'])->name('checkVerify');
-        Route::get('/register/send-verify',[RegisterController::class,'sendVerify'])->name('sendVerify');
+        Route::get('/login/send-verify', [LoginController::class, 'sendVerify'])->name('login.sendVerify');
+        Route::get('/login/check-verify', [LoginController::class, 'checkVerify'])->name('login.checkVerify');
+        Route::get('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('sendVerify');
+        Route::middleware('auth:api')->group(function () {
+            Route::get('/login/profile', [LoginController::class, 'profile'])->name('login.profile');
+        });
     });
 });

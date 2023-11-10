@@ -16,6 +16,16 @@ use Kavenegar\Exceptions\HttpException;
 
 class LoginController extends Controller implements LoginControllerInterface
 {
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function profile()
+    {
+        return Response::message(__('auth.messages.your_account_information_has_been_found'))->data(auth()->user())->send();
+    }
+
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->firstOrFail();
