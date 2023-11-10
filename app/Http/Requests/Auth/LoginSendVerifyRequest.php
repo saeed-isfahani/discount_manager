@@ -22,7 +22,7 @@ class LoginSendVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => 'required|regex:/[0]{1}[0-9]{10}/',
+            'mobile' => 'required|regex:/[98]{1}[0-9]{10}/',
         ];
     }
 }
