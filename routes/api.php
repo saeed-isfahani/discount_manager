@@ -26,8 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::get('/login/send-verify', [LoginController::class, 'sendVerify'])->name('login.sendVerify');
-        Route::get('/login/check-verify', [LoginController::class, 'checkVerify'])->name('login.checkVerify');
+        Route::post('/login/send-verify', [LoginController::class, 'sendVerify'])->name('login.sendVerify');
+        Route::post('/login/check-verify', [LoginController::class, 'checkVerify'])->name('login.checkVerify');
         Route::get('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('sendVerify');
         Route::middleware('auth:api')->group(function () {
             Route::get('/login/profile', [LoginController::class, 'profile'])->name('login.profile');
