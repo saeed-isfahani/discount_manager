@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::get('/login/send-verify',[LoginController::class,'sendVerify'])->name('sendVerify');
+        Route::get('/login/check-verify',[LoginController::class,'checkVerify'])->name('checkVerify');
         Route::get('/register/send-verify',[RegisterController::class,'sendVerify'])->name('sendVerify');
     });
 });
