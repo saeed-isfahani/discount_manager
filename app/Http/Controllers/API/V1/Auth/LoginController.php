@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginSendVerifyRequest;
+use App\Http\Requests\Auth\LoginSendVerifyRequest;
 use App\Models\User;
 use App\Models\VerificationRequest;
-use Carbon\Carbon;
+use App\Facades\Response;
 use Exception;
 use Kavenegar\Exceptions\ApiException;
 use Kavenegar\Exceptions\HttpException;
@@ -16,21 +16,28 @@ class LoginController extends Controller implements LoginControllerInterface
 {
     public function sendVerify(LoginSendVerifyRequest $request)
     {
-        $user = User::where('mobile', $request->mobile)->findOrFail();
+        $user = User::where('mobile', $request->mobile)->firstOrFail();
 
-        $lastVerificationCode = VerificationRequest::where('receiver', $request->mobile)
-            ->whereNotNull('last_seen')
-            ->whereTime('last_seen', '>=', now()->subMinute(2))
+        $lastVerificationCode = VerificationRequest::where('receiver', $user->mobile)
+            ->whereNull('veriffication_at')
+            ->whereTarget('login')
+            ->whereTime('created_at', '>=', now()->subMinute(2))
             ->first();
-
-        if (app()->environment(['production'])) {
-            $verificationCode = rand(10000, 99999);
+        if ($lastVerificationCode) {
+            $lastVerificationCode->increment('attempts');
         } else {
-            $verificationCode = '12345';
+            $lastVerificationCode = VerificationRequest::create([
+                'provider' => 'kavehnegar',
+                'code' => rand(10000, 99999),
+                'receiver' => $user->mobile,
+                'attempts' => 1,
+                'target' => 'login',
+                'expire_at'=>now()->addMinutes(2),
+            ]);
         }
 
         try {
-            Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $verificationCode]));
+            Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $lastVerificationCode->code]));
         } catch (\Kavenegar\Exceptions\ApiException $e) {
             throw new ApiException($e->errorMessage(), 500);
         } catch (\Kavenegar\Exceptions\HttpException $e) {
@@ -39,23 +46,6 @@ class LoginController extends Controller implements LoginControllerInterface
             throw new Exception($ex->getMessage(), 500);
         }
 
-        $hasVerificationCode = VerificationRequest::where('receiver', $request->mobile)
-            ->where('expire_at', '>', Carbon::now())
-            ->first();
-
-        if ($hasVerificationCode) {
-            DB::table('verification_requests')
-                ->where('receiver', $hasVerificationCode->receiver)
-                ->where('updated_at', $hasVerificationCode->updated_at)
-                ->increment('attempts', 1);
-        } else {
-            VerificationRequest::create([
-                'provider' => VerificationRequestProviderEnum::KAVEHNEGAR,
-                'code' => $verificationCode,
-                'receiver' => $request->mobile,
-                'expire_at' => Carbon::now()->addMinute(2)
-            ]);
-        }
         return Response::status(200)->message(__('auth.messages.code_was_sent'))->send();
     }
 }
