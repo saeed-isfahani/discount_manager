@@ -19,6 +19,7 @@ return [
         'your_verification_code' => 'Your verification code is: :code',
         'code_was_sent' => 'Code sent to you successfully',
         'mobile_is_just_verified' => 'Mobile just verified successfully',
+        'user_registered_successfully' => 'User is registered successfully',
     ],
     'errors' => [
         'failed' => 'These credentials do not match our records.',

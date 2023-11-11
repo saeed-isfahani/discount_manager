@@ -7,6 +7,7 @@ use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\CheckVerifyRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\SendVerifyRequest;
 use App\Models\User;
 use App\Models\VerificationRequest;
@@ -72,6 +73,27 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             $verificationCodeIsValid->veriffication_at = Carbon::now();
             $verificationCodeIsValid->save();
             return Response::status(200)->message(__('auth.messages.mobile_is_just_verified'))->send();
+        }
+
+        throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $mobileIsVerified = VerificationRequest::where('receiver', $request->mobile)
+            ->where('expire_at', '>', Carbon::now())
+            ->where('veriffication_at', 'IS NOT', null)
+            ->first();
+
+        if ($mobileIsVerified) {
+            User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'full_name' => $request->first_name . ' ' . $request->last_name,
+                'mobile' => $request->mobile
+            ]);
+
+            return Response::status(200)->message(__('auth.messages.user_registered_successfully'))->send();
         }
 
         throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));

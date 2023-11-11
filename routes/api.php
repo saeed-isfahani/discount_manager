@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
+        Route::post('/register',[RegisterController::class,'register'])->name('register');
         Route::post('/register/send-verify',[RegisterController::class,'sendVerify'])->name('register.sendVerify');
         Route::post('/register/check-verify',[RegisterController::class,'checkVerify'])->name('register.checkVerify');
     });
