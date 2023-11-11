@@ -50,7 +50,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
         $token = auth()->attempt([
             'mobile' => $request->mobile,
-            'password' => null,
+            'password' => 'password',
         ]);
         if (!$token) {
             throw new UnauthorizedException();
