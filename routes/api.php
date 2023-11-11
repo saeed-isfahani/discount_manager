@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,9 +29,9 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/login/send-verify', [LoginController::class, 'sendVerify'])->name('login.sendVerify');
         Route::post('/login/check-verify', [LoginController::class, 'checkVerify'])->name('login.checkVerify');
-        Route::get('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('sendVerify');
+        Route::post('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('register.sendVerify');
         Route::middleware('auth:api')->group(function () {
-            Route::get('/login/profile', [LoginController::class, 'profile'])->name('login.profile');
+            Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         });
     });
 });

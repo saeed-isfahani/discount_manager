@@ -13,19 +13,10 @@ use Exception;
 use Illuminate\Validation\UnauthorizedException;
 use Kavenegar\Exceptions\ApiException;
 use Kavenegar\Exceptions\HttpException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller implements LoginControllerInterface
 {
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function profile()
-    {
-        return Response::message(__('auth.messages.your_account_information_has_been_found'))->data(auth()->user())->send();
-    }
-
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
@@ -48,15 +39,14 @@ class LoginController extends Controller implements LoginControllerInterface
             'veriffication_at' => now(),
         ]);
 
-        $token = auth()->attempt([
-            'mobile' => $request->mobile,
-            'password' => 'password',
-        ]);
+        $token = JWTAuth::fromUser($user);
         if (!$token) {
             throw new UnauthorizedException();
         }
 
-        return Response::message(__('auth.messages.you_have_successfully_logged_into_your_account'))->data($this->respondWithToken($token))->send();
+        return Response::message(__('auth.messages.you_have_successfully_logged_into_your_account'))
+            ->data($token)
+            ->send();
     }
 
     public function sendVerify(LoginSendVerifyRequest $request)
