@@ -2,7 +2,6 @@
 
 namespace App\Contracts\Controller\Api\V1\Auth;
 
-use App\Facades\Response;
 use App\Http\Requests\Auth\RegisterCheckVerifyRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RegisterSendVerifyRequest;
