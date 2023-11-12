@@ -28,6 +28,7 @@ return [
         'user_exists' => 'A user with this mobile number exists',
         'code_was_sent_before' => 'A verification code was sent to you before',
         'mobile_or_code_wrong_or_code_expired' => 'Mobile or code is wrong or code expired',
+        'mobile_format_is_not_valid' => 'Your mobile format is not valid',
     ]
 
 ];

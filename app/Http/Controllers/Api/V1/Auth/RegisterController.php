@@ -13,7 +13,7 @@ use App\Models\User;
 use App\Models\VerificationRequest;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Kavenegar;
 use Kavenegar\Exceptions\ApiException;
@@ -50,7 +50,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
                 'provider' => VerificationRequestProviderEnum::KAVEHNEGAR,
                 'code' => $verificationCode,
                 'receiver' => $request->mobile,
-                'expire_at' => Carbon::now()->addMinute(2)
+                'expire_at' => Carbon::now()->addMinute(config('settings.verification_request_timeout_in_minute'))
             ]);
         }
 
@@ -61,16 +61,17 @@ class RegisterController extends Controller implements RegisterControllerInterfa
     {
         $verificationCodeIsValid = VerificationRequest::where('receiver', $request->mobile)
             ->where('expire_at', '>', Carbon::now())
-            ->where('code', $request->code)
             ->where('veriffication_at', null)
             ->first();
 
         if (!$verificationCodeIsValid) {
-            DB::table('verification_requests')
-                ->where('receiver', $request->mobile)
-                ->where('code', $request->code)
-                ->increment('attempts', 1);
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
+        }
+
+        if ($verificationCodeIsValid and $verificationCodeIsValid->code != $request->code) {
+            $verificationCodeIsValid->update([
+                'attempts' => $verificationCodeIsValid->attempts + 1
+            ]);
         }
 
         $verificationCodeIsValid->update('veriffication_at', Carbon::now());
@@ -95,6 +96,8 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             'mobile' => $request->mobile,
             'email' => $request->email
         ]);
+
+        Registered::dispatch();
 
         return Response::message('auth.messages.user_registered_successfully')->send();
     }
