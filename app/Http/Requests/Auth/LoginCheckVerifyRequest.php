@@ -27,11 +27,4 @@ class LoginCheckVerifyRequest extends FormRequest
             'code' => 'required|integer|min:10000|max:99999',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'mobile.regex' => __('auth.messages.Entered mobile number must be 10 digits and start with 98'),
-        ];
-    }
 }

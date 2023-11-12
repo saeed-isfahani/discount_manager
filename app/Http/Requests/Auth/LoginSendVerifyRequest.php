@@ -26,11 +26,4 @@ class LoginSendVerifyRequest extends FormRequest
             'mobile' => ['required', 'numeric', new ValidateMobileFormat],
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'mobile.regex' => __('auth.messages.Entered mobile number must be 10 digits and start with 98'),
-        ];
-    }
 }
