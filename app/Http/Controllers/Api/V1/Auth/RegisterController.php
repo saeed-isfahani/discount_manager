@@ -52,6 +52,8 @@ class RegisterController extends Controller implements RegisterControllerInterfa
                 'provider' => VerificationRequestProviderEnum::KAVEHNEGAR,
                 'code' => $verificationCode,
                 'receiver' => $request->mobile,
+                'target' => VerificationRequestTargetEnum::REGISTER->value,
+
                 'expire_at' => Carbon::now()->addMinute(config('settings.verification_request_timeout_in_minute'))
             ]);
         }
@@ -70,10 +72,10 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
+        $verificationCodeIsValid->increment('attempts');
+
         if ($verificationCodeIsValid and $verificationCodeIsValid->code != $request->code) {
-            $verificationCodeIsValid->update([
-                'attempts' => $verificationCodeIsValid->attempts + 1
-            ]);
+            throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
         $verificationCodeIsValid->update('veriffication_at', Carbon::now());

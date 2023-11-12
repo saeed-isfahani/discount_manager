@@ -33,9 +33,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         });
 
-        
-        Route::post('/register',[RegisterController::class,'register'])->name('register');
-        Route::post('/register/send-verify',[RegisterController::class,'sendVerify'])->name('register.sendVerify');
-        Route::post('/register/check-verify',[RegisterController::class,'checkVerify'])->name('register.checkVerify');
+
+        Route::post('/register', [RegisterController::class, 'register'])->name('register');
+        Route::post('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('register.sendVerify');
+        Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
     });
 });
