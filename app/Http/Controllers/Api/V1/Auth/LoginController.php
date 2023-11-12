@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
+use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
+use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginSendVerifyRequest;
 use App\Models\User;
@@ -13,6 +15,7 @@ use Exception;
 use Illuminate\Validation\UnauthorizedException;
 use Kavenegar\Exceptions\ApiException;
 use Kavenegar\Exceptions\HttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller implements LoginControllerInterface
@@ -21,18 +24,23 @@ class LoginController extends Controller implements LoginControllerInterface
     {
         $user = User::where('mobile', $request->mobile)->first();
         if (!$user) {
-            return Response::status(404)->message(__('auth.messages.This user is not registered Please use the registration tab'))->send();
+            return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
-            ->whereCode($request->code)
             ->whereNull('veriffication_at')
-            ->whereTarget('login')
-            ->whereTime('created_at', '>=', now()->subMinute(2))
+            ->where('target', VerificationRequestTargetEnum::LOGIN->value)
+            ->whereTime('created_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute')))
             ->latest()
             ->first();
         if (!$lastVerificationRequest) {
-            return Response::status(500)->message(__('auth.messages.mobile_or_code_was_not_valid'))->send();
+            return new BadRequestHttpException();
+        }
+
+        $lastVerificationRequest->increment('attempts');
+
+        if ($lastVerificationRequest->code != $request->code) {
+            return new BadRequestHttpException(__('auth.messages.code_is_invalid'));
         }
 
         $lastVerificationRequest->update([
@@ -44,8 +52,8 @@ class LoginController extends Controller implements LoginControllerInterface
             throw new UnauthorizedException();
         }
 
-        return Response::message(__('auth.messages.you_have_successfully_logged_into_your_account'))
-            ->data($token)
+        return Response::message('auth.messages.you_have_successfully_logged_into_your_account')
+            ->data(['access_token' => $token])
             ->send();
     }
 
@@ -53,25 +61,25 @@ class LoginController extends Controller implements LoginControllerInterface
     {
         $user = User::where('mobile', $request->mobile)->first();
         if (!$user) {
-            return Response::status(404)->message(__('auth.messages.This user is not registered Please use the registration tab'))->send();
+            return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
             ->whereNull('veriffication_at')
-            ->whereTarget('login')
+            ->where('target', VerificationRequestTargetEnum::LOGIN->value)
             ->whereTime('expire_at', '>=', now())
             ->latest()
             ->first();
         if ($lastVerificationRequest) {
-            $lastVerificationRequest->increment('attempts');
+            return Response::status(200)->message('auth.messages.code_was_sent')->send();
         } else {
             $lastVerificationRequest = VerificationRequest::create([
-                'provider' => 'kavehnegar',
+                'provider' => VerificationRequestProviderEnum::KAVEHNEGAR->value,
                 'code' => rand(10000, 99999),
                 'receiver' => $request->mobile,
                 'attempts' => 1,
-                'target' => 'login',
-                'expire_at' => now()->addMinutes(2),
+                'target' => VerificationRequestTargetEnum::LOGIN->value,
+                'expire_at' => now()->addMinutes(config('settings.verification_request_timeout_in_minute')),
             ]);
         }
 
@@ -85,6 +93,6 @@ class LoginController extends Controller implements LoginControllerInterface
             throw new Exception($ex->getMessage(), 500);
         }
 
-        return Response::status(200)->message(__('auth.messages.code_was_sent'))->send();
+        return Response::status(200)->message('auth.messages.code_was_sent')->send();
     }
 }

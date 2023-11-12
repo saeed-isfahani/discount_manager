@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
+use App\Contracts\Controller\Api\V1\Auth\ProfileControllerInterface;
 use App\Http\Controllers\Controller;
 use App\Facades\Response;
 
-class ProfileController extends Controller implements LoginControllerInterface
+class ProfileController extends Controller implements ProfileControllerInterface
 {
     /**
      * Get the authenticated User.

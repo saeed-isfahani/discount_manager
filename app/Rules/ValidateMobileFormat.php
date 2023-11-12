@@ -20,7 +20,7 @@ class ValidateMobileFormat implements ValidationRule
 
     public function passes($attribute, $value)
     {
-        if (!preg_match('/[0]{1}[0-9]{10}/', $value)) {
+        if (!preg_match('/(98)[0-9]{10}$/', $value)) {
             return __('auth.errors.currency_key_not_found_or_deactive');
         }
     }

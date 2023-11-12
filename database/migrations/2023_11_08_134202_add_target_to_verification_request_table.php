@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('verification_requests', function (Blueprint $table) {
-            $table->enum('target', VerificationRequestTargetEnum::values())->nullable();
+            $table->enum('target', VerificationRequestTargetEnum::values());
         });
     }
 

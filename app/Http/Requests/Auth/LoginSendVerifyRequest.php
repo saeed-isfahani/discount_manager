@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\ValidateMobileFormat;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginSendVerifyRequest extends FormRequest
@@ -22,7 +23,7 @@ class LoginSendVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => 'required|regex:/(98)[0-9]{10}$/',
+            'mobile' => ['required', 'numeric', new ValidateMobileFormat],
         ];
     }
 
