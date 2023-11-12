@@ -23,6 +23,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisterController extends Controller implements RegisterControllerInterface
 {
+
+
     public function sendVerify(RegisterSendVerifyRequest $request)
     {
         if (User::where('mobile', $request->mobile)->exists()) {
@@ -61,6 +63,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
         return Response::message('auth.messages.code_was_sent')->send();
     }
 
+    
     public function checkVerify(RegisterCheckVerifyRequest $request)
     {
         $verificationCodeIsValid = VerificationRequest::where('receiver', $request->mobile)

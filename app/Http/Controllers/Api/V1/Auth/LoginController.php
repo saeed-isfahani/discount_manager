@@ -20,6 +20,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller implements LoginControllerInterface
 {
+
+    
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
