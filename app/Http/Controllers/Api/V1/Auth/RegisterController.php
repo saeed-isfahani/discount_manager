@@ -14,10 +14,12 @@ use App\Models\VerificationRequest;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Kavenegar;
 use Kavenegar\Exceptions\ApiException;
 use Kavenegar\Exceptions\HttpException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisterController extends Controller implements RegisterControllerInterface
 {
@@ -90,15 +92,21 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
-        User::create([
+        $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'mobile' => $request->mobile,
             'email' => $request->email
         ]);
 
+        $token = JWTAuth::fromUser($user);
+        if (!$token) {
+            throw new UnauthorizedException();
+        }
+
+
         Registered::dispatch();
 
-        return Response::message('auth.messages.user_registered_successfully')->send();
+        return Response::data(['access_token' => $token])->message('auth.messages.user_registered_successfully')->send();
     }
 }
