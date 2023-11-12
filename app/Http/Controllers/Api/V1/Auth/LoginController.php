@@ -72,26 +72,35 @@ class LoginController extends Controller implements LoginControllerInterface
             ->first();
         if ($lastVerificationRequest) {
             return Response::status(200)->message('auth.messages.code_was_sent')->send();
-        } else {
-            $lastVerificationRequest = VerificationRequest::create([
-                'provider' => VerificationRequestProviderEnum::KAVEHNEGAR->value,
-                'code' => rand(10000, 99999),
-                'receiver' => $request->mobile,
-                'attempts' => 1,
-                'target' => VerificationRequestTargetEnum::LOGIN->value,
-                'expire_at' => now()->addMinutes(config('settings.verification_request_timeout_in_minute')),
-            ]);
         }
 
-        try {
-            Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $lastVerificationRequest->code]));
-        } catch (\Kavenegar\Exceptions\ApiException $e) {
-            throw new ApiException($e->errorMessage(), 500);
-        } catch (\Kavenegar\Exceptions\HttpException $e) {
-            throw new HttpException($e->errorMessage(), 500);
-        } catch (\Exception $ex) {
-            throw new Exception($ex->getMessage(), 500);
+
+ 
+
+        $verificationCode = '123456';
+        if (app()->environment(['production'])) {
+            $verificationCode = rand(10000, 99999);
+            try {
+                Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $verificationCode]));
+            } catch (\Kavenegar\Exceptions\ApiException $e) {
+                throw new ApiException($e->errorMessage(), 500);
+            } catch (\Kavenegar\Exceptions\HttpException $e) {
+                throw new HttpException($e->errorMessage(), 500);
+            } catch (\Exceptions $ex) {
+                throw new Exception($ex->getMessage(), 500);
+            }
         }
+    
+
+        $lastVerificationRequest = VerificationRequest::create([
+            'provider' => VerificationRequestProviderEnum::KAVEHNEGAR->value,
+            'code' => $verificationCode,
+            'receiver' => $request->mobile,
+            'attempts' => 1,
+            'target' => VerificationRequestTargetEnum::LOGIN->value,
+            'expire_at' => now()->addMinutes(config('settings.verification_request_timeout_in_minute')),
+        ]);
+
 
         return Response::status(200)->message('auth.messages.code_was_sent')->send();
     }
