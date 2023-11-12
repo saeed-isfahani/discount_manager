@@ -13,7 +13,7 @@ class ProfileController extends Controller implements ProfileControllerInterface
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function getMe()
     {
         return Response::message(__('auth.messages.your_account_information_has_been_found'))->data(auth()->user())->send();
     }
