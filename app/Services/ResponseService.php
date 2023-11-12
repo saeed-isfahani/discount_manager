@@ -4,7 +4,7 @@ namespace App\Services;
 
 class ResponseService
 {
-    public int $status = 201;
+    public int $status = 200;
     public string $message = 'success';
     public array $data = [];
     public array $errors = [];

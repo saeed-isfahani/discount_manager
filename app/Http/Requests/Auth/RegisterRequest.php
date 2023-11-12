@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\ValidateMobileFormat;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SendVerifyRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +23,10 @@ class SendVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "mobile" => ['required', 'numeric','regex:/[0]{1}[0-9]{10}/'],
+            "code" => ['required', 'numeric', 'digits:6'],
+            "first_name" => ['required', 'string', 'min:3', 'max:20'],
+            "last_name" => ['required', 'string', 'min:3', 'max:20'],
+            "email" => ['email'],
         ];
     }
 }

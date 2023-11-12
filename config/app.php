@@ -172,6 +172,7 @@ return [
         Kavenegar\Laravel\ServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Kavenegar\Laravel\ServiceProvider::class,
     ])->toArray(),
 
     /*

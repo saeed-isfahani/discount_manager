@@ -18,6 +18,8 @@ return [
     'messages' => [
         'your_verification_code' => 'Your verification code is: :code',
         'code_was_sent' => 'Code sent to you successfully',
+        'mobile_is_just_verified' => 'Mobile just verified successfully',
+        'user_registered_successfully' => 'User is registered successfully',
     ],
     'errors' => [
         'failed' => 'These credentials do not match our records.',
@@ -25,6 +27,8 @@ return [
         'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
         'user_exists' => 'A user with this mobile number exists',
         'code_was_sent_before' => 'A verification code was sent to you before',
+        'mobile_or_code_wrong_or_code_expired' => 'Mobile or code is wrong or code expired',
+        'mobile_format_is_not_valid' => 'Your mobile format is not valid',
     ]
 
 ];
