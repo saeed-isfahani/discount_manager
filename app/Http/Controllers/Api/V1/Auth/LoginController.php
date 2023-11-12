@@ -21,7 +21,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class LoginController extends Controller implements LoginControllerInterface
 {
 
-    
+
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
@@ -59,6 +59,7 @@ class LoginController extends Controller implements LoginControllerInterface
             ->send();
     }
 
+
     public function sendVerify(LoginSendVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
@@ -77,7 +78,7 @@ class LoginController extends Controller implements LoginControllerInterface
         }
 
 
- 
+
 
         $verificationCode = '123456';
         if (app()->environment(['production'])) {
@@ -92,7 +93,7 @@ class LoginController extends Controller implements LoginControllerInterface
                 throw new Exception($ex->getMessage(), 500);
             }
         }
-    
+
 
         $lastVerificationRequest = VerificationRequest::create([
             'provider' => VerificationRequestProviderEnum::KAVEHNEGAR->value,

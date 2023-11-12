@@ -63,7 +63,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
         return Response::message('auth.messages.code_was_sent')->send();
     }
 
-    
+
     public function checkVerify(RegisterCheckVerifyRequest $request)
     {
         $verificationCodeIsValid = VerificationRequest::where('receiver', $request->mobile)
@@ -86,6 +86,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
         return Response::message('auth.messages.mobile_is_just_verified')->send();
     }
 
+    
     public function register(RegisterRequest $request)
     {
         $mobileIsVerified = VerificationRequest::where('receiver', $request->mobile)
