@@ -20,8 +20,8 @@ class ValidateMobileFormat implements ValidationRule
 
     public function passes($attribute, $value)
     {
-        if (!preg_match('/[0]{1}[0-9]{10}/', $value)) {
-            return __('auth.errors.currency_key_not_found_or_deactive');
+        if (!preg_match('/(98)[0-9]{10}$/', $value)) {
+            return __('auth.messages.entered_mobile_number_must_be_10_digits_and_start_with_98');
         }
     }
 }

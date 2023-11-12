@@ -9,10 +9,7 @@ class VerificationRequest extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'provider',
-        'code',
-        'receiver',
-        'expire_at'
+    protected $guarded = [
+        'id',
     ];
 }

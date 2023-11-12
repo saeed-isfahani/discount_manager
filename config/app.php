@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Tehran',
 
     /*
     |--------------------------------------------------------------------------
@@ -171,6 +171,7 @@ return [
         L5Swagger\L5SwaggerServiceProvider::class,
         Kavenegar\Laravel\ServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Kavenegar\Laravel\ServiceProvider::class,
     ])->toArray(),
 
@@ -188,6 +189,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'Kavenegar' => Kavenegar\Laravel\Facade::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
     ])->toArray(),
 
 ];
