@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\ValidateMobileFormat;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -22,10 +23,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "mobile" => ['required', 'numeric', 'regex:/[0]{1}[0-9]{10}/'],
-            "first_name" => ['required', 'string'],
-            "last_name" => ['required', 'string'],
-            "full_name" => ['string'],
+            "code" => ['required', 'numeric', 'digits:6'],
+            "first_name" => ['required', 'string', 'min:3', 'max:20'],
+            "last_name" => ['required', 'string', 'min:3', 'max:20'],
+            "email" => ['email'],
         ];
     }
 }

@@ -6,9 +6,9 @@ use App\Contracts\Controller\Api\V1\Auth\RegisterControllerInterface;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\CheckVerifyRequest;
+use App\Http\Requests\Auth\RegisterCheckVerifyRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\SendVerifyRequest;
+use App\Http\Requests\Auth\RegisterSendVerifyRequest;
 use App\Models\User;
 use App\Models\VerificationRequest;
 use Carbon\Carbon;
@@ -21,36 +21,31 @@ use Kavenegar\Exceptions\HttpException;
 
 class RegisterController extends Controller implements RegisterControllerInterface
 {
-    public function sendVerify(SendVerifyRequest $request)
+    public function sendVerify(RegisterSendVerifyRequest $request)
     {
         if (User::where('mobile', $request->mobile)->exists()) {
             throw new BadRequestException(__('auth.errors.user_exists'));
-        }
-
-        $verificationCode = '123456';
-        if (app()->environment(['production'])) {
-            $verificationCode = rand(10000, 99999);
-            try {
-                Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $verificationCode]));
-            } catch (\Kavenegar\Exceptions\ApiException $e) {
-                throw new ApiException($e->errorMessage(), 500);
-            } catch (\Kavenegar\Exceptions\HttpException $e) {
-                throw new HttpException($e->errorMessage(), 500);
-            } catch (\Exceptions $ex) {
-                throw new Exception($ex->getMessage(), 500);
-            }
         }
 
         $hasVerificationCode = VerificationRequest::where('receiver', $request->mobile)
             ->where('expire_at', '>', Carbon::now())
             ->first();
 
-        if ($hasVerificationCode) {
-            DB::table('verification_requests')
-                ->where('receiver', $hasVerificationCode->receiver)
-                ->where('updated_at', $hasVerificationCode->updated_at)
-                ->increment('attempts', 1);
-        } else {
+        if (!$hasVerificationCode) {
+            $verificationCode = '123456';
+            if (app()->environment(['production'])) {
+                $verificationCode = rand(10000, 99999);
+                try {
+                    Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $verificationCode]));
+                } catch (\Kavenegar\Exceptions\ApiException $e) {
+                    throw new ApiException($e->errorMessage(), 500);
+                } catch (\Kavenegar\Exceptions\HttpException $e) {
+                    throw new HttpException($e->errorMessage(), 500);
+                } catch (\Exceptions $ex) {
+                    throw new Exception($ex->getMessage(), 500);
+                }
+            }
+
             VerificationRequest::create([
                 'provider' => VerificationRequestProviderEnum::KAVEHNEGAR,
                 'code' => $verificationCode,
@@ -58,10 +53,11 @@ class RegisterController extends Controller implements RegisterControllerInterfa
                 'expire_at' => Carbon::now()->addMinute(2)
             ]);
         }
-        return Response::status(200)->message(__('auth.messages.code_was_sent'))->send();
+
+        return Response::message('auth.messages.code_was_sent')->send();
     }
 
-    public function checkVerify(CheckVerifyRequest $request)
+    public function checkVerify(RegisterCheckVerifyRequest $request)
     {
         $verificationCodeIsValid = VerificationRequest::where('receiver', $request->mobile)
             ->where('expire_at', '>', Carbon::now())
@@ -69,13 +65,17 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             ->where('veriffication_at', null)
             ->first();
 
-        if ($verificationCodeIsValid) {
-            $verificationCodeIsValid->veriffication_at = Carbon::now();
-            $verificationCodeIsValid->save();
-            return Response::status(200)->message(__('auth.messages.mobile_is_just_verified'))->send();
+        if (!$verificationCodeIsValid) {
+            DB::table('verification_requests')
+                ->where('receiver', $request->mobile)
+                ->where('code', $request->code)
+                ->increment('attempts', 1);
+            throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
-        throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
+        $verificationCodeIsValid->update('veriffication_at', Carbon::now());
+
+        return Response::message('auth.messages.mobile_is_just_verified')->send();
     }
 
     public function register(RegisterRequest $request)
@@ -85,17 +85,17 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             ->where('veriffication_at', 'IS NOT', null)
             ->first();
 
-        if ($mobileIsVerified) {
-            User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'full_name' => $request->first_name . ' ' . $request->last_name,
-                'mobile' => $request->mobile
-            ]);
-
-            return Response::status(200)->message(__('auth.messages.user_registered_successfully'))->send();
+        if (!$mobileIsVerified) {
+            throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
-        throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
+        User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'mobile' => $request->mobile,
+            'email' => $request->email
+        ]);
+
+        return Response::message('auth.messages.user_registered_successfully')->send();
     }
 }
