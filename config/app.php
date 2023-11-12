@@ -169,7 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         L5Swagger\L5SwaggerServiceProvider::class,
-        //
+        Kavenegar\Laravel\ServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
         Kavenegar\Laravel\ServiceProvider::class,
     ])->toArray(),

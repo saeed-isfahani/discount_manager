@@ -18,9 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'first_name',
+        'last_name',
+        'mobile',
     ];
 
     /**
@@ -42,4 +44,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            $user->full_name = $user->first_name . ' ' . $user->last_name;
+        });
+    }
 }

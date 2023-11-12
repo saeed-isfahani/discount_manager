@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\VerificationRequestProviderEnum;
+use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('verification_request', function (Blueprint $table) {
+        Schema::create('verification_requests', function (Blueprint $table) {
             $table->id();
             $table->enum('provider', VerificationRequestProviderEnum::values());
             $table->integer('code');
             $table->integer('attempts')->nullable()->default(0);
             $table->string('receiver');
-            $table->date('veriffication_at')->nullable();
-            $table->date('expire_at');
+            $table->dateTime('veriffication_at')->nullable();
+            $table->dateTime('expire_at');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('verification_request');
+        Schema::dropIfExists('verification_requests');
     }
 };
