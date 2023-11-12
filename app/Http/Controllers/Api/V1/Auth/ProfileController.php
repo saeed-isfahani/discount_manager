@@ -15,6 +15,6 @@ class ProfileController extends Controller implements ProfileControllerInterface
      */
     public function getMe()
     {
-        return Response::message(__('auth.messages.your_account_information_has_been_found'))->data(auth()->user())->send();
+        return Response::message('auth.messages.your_account_information_has_been_found')->data(auth()->user())->send();
     }
 }

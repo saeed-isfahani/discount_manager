@@ -40,7 +40,7 @@ class LoginController extends Controller implements LoginControllerInterface
         $lastVerificationRequest->increment('attempts');
 
         if ($lastVerificationRequest->code != $request->code) {
-            return new BadRequestHttpException(__('auth.messages.code_is_invalid'));
+            return new BadRequestHttpException('auth.messages.code_is_invalid');
         }
 
         $lastVerificationRequest->update([
