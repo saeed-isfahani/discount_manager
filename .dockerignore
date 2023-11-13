@@ -17,5 +17,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+dock*
+Dock*
+.dock*
 logs/
 mysql/
+nginx/
