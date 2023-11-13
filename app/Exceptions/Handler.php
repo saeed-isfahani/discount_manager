@@ -26,6 +26,7 @@ class Handler extends ExceptionHandler
 
     private $customExceptions = [
         ForbiddenAccessException::class,
+        BadRequestException::class,
     ];
 
     private $customErrors = [
@@ -68,20 +69,16 @@ class Handler extends ExceptionHandler
     {
         $exceptionClass = get_class($e);
         if (in_array($exceptionClass, array_keys($this->customErrors))) {
-            $errors = method_exists($e, 'errors') ? $e->errors() : [];
-            throw new $this
-                ->customErrors[$exceptionClass]['exception'](__($this->customErrors[$exceptionClass]['message']), $errors);
+            $errors = (isset($e->validator) ? $e->validator->getMessageBag()->messages() : []);
+            throw new $this->customErrors[$exceptionClass]['exception'](__($this->customErrors[$exceptionClass]['message']), $errors);
         }
 
-        if (in_array($exceptionClass, $this->customExceptions)) {
-            return $e->render();
-        } else {
-            $statusCode = $this::getErrorStatusCode($e);
-            return Response::message($e->getMessage())->status($statusCode)->send();
-        }
+        if (in_array($exceptionClass, $this->customExceptions)) return $e->render();
+
+        return Response::message('server error')->status(500)->send();
     }
 
-    public static function getErrorStatusCode(Throwable $error) : int
+    public static function getErrorStatusCode(Throwable $error): int
     {
         return method_exists($error, 'getStatusCode') ? $error->getStatusCode() : 500;
     }
