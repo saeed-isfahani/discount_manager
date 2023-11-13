@@ -28,6 +28,7 @@ class RegisterRequest extends FormRequest
             "first_name" => ['required', 'string', 'min:3', 'max:20'],
             "last_name" => ['required', 'string', 'min:3', 'max:20'],
             "email" => ['email'],
+            "mobile" => ['required', 'numeric', new ValidateMobileFormat]
         ];
     }
 }
