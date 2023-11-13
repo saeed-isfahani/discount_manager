@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile
     image: discount:latest
     env_file:
-      - ./.env
+      - ./env/.env
     container_name: discount
     hostname: discount
     restart: unless-stopped
