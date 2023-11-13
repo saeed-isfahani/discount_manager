@@ -23,6 +23,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "mobile" => ['required', 'numeric', new ValidateMobileFormat],
             "code" => ['required', 'numeric', 'digits:6'],
             "first_name" => ['required', 'string', 'min:3', 'max:20'],
             "last_name" => ['required', 'string', 'min:3', 'max:20'],

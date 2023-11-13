@@ -11,10 +11,8 @@ use App\Models\User;
 use App\Models\VerificationRequest;
 use App\Facades\Response;
 use App\Http\Requests\Auth\LoginCheckVerifyRequest;
-use Exception;
+use App\Jobs\VerificationCodeSender;
 use Illuminate\Validation\UnauthorizedException;
-use Kavenegar\Exceptions\ApiException;
-use Kavenegar\Exceptions\HttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -77,33 +75,7 @@ class LoginController extends Controller implements LoginControllerInterface
             return Response::status(200)->message('auth.messages.code_was_sent')->send();
         }
 
-
-
-
-        $verificationCode = '123456';
-        if (app()->environment(['production'])) {
-            $verificationCode = rand(10000, 99999);
-            try {
-                Kavenegar::send('10004346', $request->mobile, __('auth.messages.your_verification_code', ['code', $verificationCode]));
-            } catch (\Kavenegar\Exceptions\ApiException $e) {
-                throw new ApiException($e->errorMessage(), 500);
-            } catch (\Kavenegar\Exceptions\HttpException $e) {
-                throw new HttpException($e->errorMessage(), 500);
-            } catch (\Exceptions $ex) {
-                throw new Exception($ex->getMessage(), 500);
-            }
-        }
-
-
-        $lastVerificationRequest = VerificationRequest::create([
-            'provider' => VerificationRequestProviderEnum::KAVEHNEGAR->value,
-            'code' => $verificationCode,
-            'receiver' => $request->mobile,
-            'attempts' => 1,
-            'target' => VerificationRequestTargetEnum::LOGIN->value,
-            'expire_at' => now()->addMinutes(config('settings.verification_request_timeout_in_minute')),
-        ]);
-
+        VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN);
 
         return Response::status(200)->message('auth.messages.code_was_sent')->send();
     }
