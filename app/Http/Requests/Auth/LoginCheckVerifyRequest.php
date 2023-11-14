@@ -24,7 +24,8 @@ class LoginCheckVerifyRequest extends FormRequest
     {
         return [
             'mobile' => ['required', 'numeric', new ValidateMobileFormat],
-            'code' => 'required|integer|min:10000|max:99999',
+            "code" => ['required', 'numeric', 'digits:6'],
+
         ];
     }
 }
