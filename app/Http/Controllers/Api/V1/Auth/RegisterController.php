@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\RegisterControllerInterface;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
