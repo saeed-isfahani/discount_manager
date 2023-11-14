@@ -88,7 +88,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
         }
 
 
-        Registered::dispatch();
+        // Registered::dispatch();
 
         return Response::data(['access_token' => $token])->message('auth.messages.user_registered_successfully')->send();
     }
