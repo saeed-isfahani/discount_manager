@@ -1,7 +1,7 @@
 
 workflow:
   rules:
-    - if: ($CI_PIPELINE_SOURCE == "push") && ($CI_COMMIT_BRANCH == "develop")
+    - if: ($CI_PIPELINE_SOURCE == "push") && ($CI_COMMIT_BRANCH == "feature/pipeline-1")
       when: always
     - when: never
    
