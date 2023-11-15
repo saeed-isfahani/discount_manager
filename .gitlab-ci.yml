@@ -15,7 +15,6 @@ build-job:
   stage: build
   script:
     - echo "Building the image ..."
-    - echo $BACK_ENV > ./env/.env
     - docker build --build-arg NODE_ENV=development -t discount:v1.$CI_PIPELINE_IID -t discount:latest .
     - echo "Building complete."  
   tags:
@@ -28,7 +27,7 @@ deploy-job:
   environment: development
   script:
     - echo "Deploying application..."
-    - sudo docker compose -f /app/discount/backend/docker-compose.yaml up -d 
+    - sudo docker compose -f /app/discount/backend/docker-compose.yml up -d 
     - echo "Application successfully deployed."
   needs: 
     - build-job
