@@ -18,8 +18,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller implements LoginControllerInterface
 {
-
-
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = User::where('mobile', $request->mobile)->first();
@@ -27,12 +25,7 @@ class LoginController extends Controller implements LoginControllerInterface
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
-        $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
-            ->whereNull('veriffication_at')
-            ->where('target', VerificationRequestTargetEnum::LOGIN->value)
-            ->whereTime('created_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute')))
-            ->latest()
-            ->first();
+        $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($request->mobile)->first();
         if (!$lastVerificationRequest) {
             return new BadRequestHttpException();
         }

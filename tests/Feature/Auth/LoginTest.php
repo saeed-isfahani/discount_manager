@@ -1,15 +1,24 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
+use App\Models\User;
+use App\Models\VerificationRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 
 
 class LoginTest extends TestCase
 {
+    private $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
     public function test_check_verify_should_get_found_if_post_is_empty()
     {
         $response = $this->post('api/v1/auth/login/check-verify');
@@ -39,10 +48,10 @@ class LoginTest extends TestCase
         $response->assertStatus(Response::HTTP_FOUND);
     }
 
-    public function test_send_verify()
+    public function test_login()
     {
         $response = $this->post('api/v1/auth/login/send-verify', [
-            'mobile' => '989102111553',
+            'mobile' => $this->user->mobile,
         ]);
 
         $response
@@ -58,13 +67,12 @@ class LoginTest extends TestCase
                     ],
                 ],
             ]);
-    }
 
-    public function test_check_verify()
-    {
+        $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($this->user->mobile)->first();
+
         $response = $this->post('api/v1/auth/login/check-verify', [
-            'mobile' => '989102111553',
-            'code' => '123456',
+            'mobile' => $this->user->mobile,
+            'code' => $lastVerificationRequest->code,
         ]);
 
         $response
