@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\SmsServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -172,7 +173,6 @@ return [
         Kavenegar\Laravel\ServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        App\Providers\SmsServiceProvider::class,
         ])->toArray(),
 
     /*

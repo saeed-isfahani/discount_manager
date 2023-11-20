@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Rate;
+namespace App\Services\Sms;
 
 use App\Contracts\Controller\Api\V1\Services\SmsServiceInterface;
 

@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-// use App\Contracts\Controller\Api\V1\Services\SmsServiceInterface;
+use App\Contracts\Controller\Api\V1\Services\SmsServiceInterface;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use App\Services\Sms\KavenegarService;
 
 class SmsServiceProvider extends ServiceProvider
 {
@@ -14,7 +13,7 @@ class SmsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('sms', function () {
+        $this->app->singleton(SmsServiceInterface::class, function () {
             $defaultSmsService = config('sms.default');
             $serviceConfig = config("sms.drivers.$defaultSmsService");
             $serviceClass = config("sms.drivers.$defaultSmsService.service");
