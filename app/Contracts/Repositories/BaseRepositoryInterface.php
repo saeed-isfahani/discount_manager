@@ -30,4 +30,6 @@ interface BaseRepositoryInterface
     public function paginate(int $perPage = 15, array $columns = ['*'], array $where = []): LengthAwarePaginator;
 
     public function with(array $relations): Builder;
+
+    public function exists(string $field, mixed $value): bool;
 }

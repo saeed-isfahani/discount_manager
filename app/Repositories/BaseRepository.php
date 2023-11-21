@@ -170,7 +170,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $where
      * @return LengthAwarePaginator
      */
-    public function paginate(int $perPage = 15, array $columns = ['*'],array $where = []): LengthAwarePaginator
+    public function paginate(int $perPage = 15, array $columns = ['*'], array $where = []): LengthAwarePaginator
     {
         $query = $this->model->newQuery();
 
@@ -190,5 +190,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function with(array $relations): Builder
     {
         return $this->model->with($relations);
+    }
+
+    /**
+     * exists
+     *
+     * @param string $field
+     * @param mixed $value
+     * @return bool
+     */
+    public function exists(string $field, mixed $value): bool
+    {
+        return $this->model->where($field, $value)->exists();
     }
 }

@@ -12,20 +12,22 @@ use App\Http\Requests\Auth\RegisterCheckVerifyRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RegisterSendVerifyRequest;
 use App\Jobs\VerificationCodeSender;
-use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Models\VerificationRequest;
 use Carbon\Carbon;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\UnauthorizedException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisterController extends Controller implements RegisterControllerInterface
 {
 
+    public function __construct(public UserRepository $userRepository)
+    {
+    }
 
     public function sendVerify(RegisterSendVerifyRequest $request)
     {
-        if (User::where('mobile', $request->mobile)->exists()) {
+        if ($this->userRepository->exists('mobile', $request->mobile)) {
             throw new BadRequestException(__('auth.errors.user_exists'));
         }
 
@@ -75,7 +77,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
-        $user = User::create([
+        $user = $this->userRepository->create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'mobile' => $request->mobile,
