@@ -31,6 +31,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
 
         $hasVerificationCode = VerificationRequest::where('receiver', $request->mobile)
             ->where('expire_at', '>', Carbon::now())
+            ->whereNull('veriffication_at')
             ->first();
 
         if (!$hasVerificationCode) {
