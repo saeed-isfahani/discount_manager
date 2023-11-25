@@ -121,19 +121,26 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * find Where
      *
-     * @param array $where
+     * @param array $wheres
+     * @param bool $first
      * @param array $columns
-     * @return Collection
+     * @return array|object
      */
-    public function findWhere(array $where, array $columns = ['*']): Collection
+    public function findWhere(array $wheres, bool $first = false, array $columns = ['*']): array|object
     {
         $query = $this->model->newQuery();
 
-        foreach ($where as $field => $value) {
-            $query = $query->where($field, $value);
+        foreach ($wheres as $where) {
+            $query->where($where[0], $where[1], $where[2]);
         }
 
-        return $query->get($columns);
+        if ($first) {
+            $result = $query->first($columns);
+        } else {
+            $result = $query->get($columns);
+        }
+
+        return $result;
     }
 
     /**
@@ -195,12 +202,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * exists
      *
-     * @param string $field
-     * @param mixed $value
+     * @param array $wheres
      * @return bool
      */
-    public function exists(string $field, mixed $value): bool
+    public function exists(array $wheres): bool
     {
-        return $this->model->where($field, $value)->exists();
+        $query = $this->model->newQuery();
+
+        foreach ($wheres as $where) {
+            $query->where($where[0], $where[1], $where[2]);
+        }
+
+        return $query->exists();
     }
 }

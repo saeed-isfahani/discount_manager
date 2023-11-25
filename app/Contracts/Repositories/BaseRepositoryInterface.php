@@ -21,7 +21,7 @@ interface BaseRepositoryInterface
 
     public function findBy(string $field, mixed $value, array $columns = ['*']): ?Model;
 
-    public function findWhere(array $where, array $columns = ['*']): Collection;
+    public function findWhere(array $wheres, bool $first = false, array $columns = ['*']): array|object;
 
     public function findWhereIn(string $field, array $values, array $columns = ['*']): Collection;
 
@@ -31,5 +31,5 @@ interface BaseRepositoryInterface
 
     public function with(array $relations): Builder;
 
-    public function exists(string $field, mixed $value): bool;
+    public function exists(array $wheres): bool;
 }

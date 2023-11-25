@@ -14,6 +14,7 @@ use App\Http\Requests\Auth\RegisterSendVerifyRequest;
 use App\Jobs\VerificationCodeSender;
 use App\Repositories\UserRepository;
 use App\Models\VerificationRequest;
+use App\Repositories\VerificationRequestRepository;
 use Carbon\Carbon;
 use Illuminate\Validation\UnauthorizedException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -21,39 +22,45 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class RegisterController extends Controller implements RegisterControllerInterface
 {
 
-    public function __construct(public UserRepository $userRepository)
-    {
+    public function __construct(
+        public UserRepository $userRepository,
+        public VerificationRequestRepository $VerificationRequestRepository
+    ) {
     }
 
     public function sendVerify(RegisterSendVerifyRequest $request)
     {
-        if ($this->userRepository->exists('mobile', $request->mobile)) {
+        if ($this->userRepository->exists([['mobile', '=', $request->mobile]])) {
             throw new BadRequestException(__('auth.errors.user_exists'));
         }
 
-        $hasVerificationCode = VerificationRequest::where('receiver', $request->mobile)
-            ->where('expire_at', '>', Carbon::now())
-            ->first();
 
-        if (!$hasVerificationCode) {
+        if (!$this->VerificationRequestRepository->exists(
+            [
+                ['receiver', '=', $request->mobile],
+                ['expire_at', '>', Carbon::now()]
+            ]
+        )) {
             VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::REGISTER);
         }
 
         return Response::message('auth.messages.code_was_sent')->send();
     }
 
-
     public function checkVerify(RegisterCheckVerifyRequest $request)
     {
-        $verificationCodeIsValid = VerificationRequest::where('receiver', $request->mobile)
-            ->where('expire_at', '>', Carbon::now())
-            ->where('veriffication_at', null)
-            ->first();
+        $verificationCodeIsValid = $this->VerificationRequestRepository->findWhere(
+            [
+                ['expire_at', '>', now()],
+                ['receiver', '=', $request->mobile],
+                ['veriffication_at', '=', null]
+            ],
+            true
+        );
 
         if (!$verificationCodeIsValid) throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
 
-
-        $verificationCodeIsValid->increment('attempts');
+        $this->VerificationRequestRepository->increment($verificationCodeIsValid, 'attempts');
         if ($verificationCodeIsValid and $verificationCodeIsValid->code != $request->code) {
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
