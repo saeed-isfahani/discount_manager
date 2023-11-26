@@ -7,11 +7,11 @@ use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginSendVerifyRequest;
-use App\Models\User;
 use App\Models\VerificationRequest;
 use App\Facades\Response;
 use App\Http\Requests\Auth\LoginCheckVerifyRequest;
 use App\Jobs\VerificationCodeSender;
+use App\Repositories\UserRepository;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -19,10 +19,13 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class LoginController extends Controller implements LoginControllerInterface
 {
 
+    public function __construct(public UserRepository $userRepository)
+    {
+    }
 
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
-        $user = User::where('mobile', $request->mobile)->first();
+        $user = $this->userRepository->findWhere([['mobile', $request->mobile]])->first();
         if (!$user) {
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
@@ -60,8 +63,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
-        $user = User::where('mobile', $request->mobile)->first();
-        if (!$user) {
+        if (!$this->userRepository->exists('mobile', $request->mobile)) {
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
