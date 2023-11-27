@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\ProvinceCityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,4 +30,6 @@ Route::prefix('v1')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
         });
     });
+    Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
+    Route::get('/cities/{use Illuminate\Http\Request;use Illuminate\Http\Request;province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
 });
