@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             "code" => ['required', 'numeric', 'digits:6'],
             "first_name" => ['required', 'string', 'min:3', 'max:20'],
             "last_name" => ['required', 'string', 'min:3', 'max:20'],
-            "email" => ['email'],
+            "email" => ['email']
         ];
     }
 }
