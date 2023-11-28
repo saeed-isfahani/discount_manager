@@ -6904,8 +6904,6 @@ class ProvincesCitiesSeeder extends Seeder
             ],
         ];
 
-        \file_put_contents('asdasd', var_export($cities, true));
-
         foreach ($cities as $city) {
             $insertProvince = [
                 'name' => $city['name'],

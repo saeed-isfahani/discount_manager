@@ -32,7 +32,8 @@ return new class extends Migration
             $table->unsignedBigInteger('province_id');
             $table->foreign('province_id')->on('province_cities')->references('id')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->unsignedBigInteger('category_id'); #TODO
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->on('categories')->references('id')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });

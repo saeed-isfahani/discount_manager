@@ -23,7 +23,7 @@ class ShopResource extends JsonResource
             'address' => $this->address,
             'uuid' => $this->uuid,
             //
-            'category_id' => $this->category_id, #todo
+            'category' => $this->category,
             'province' => $this->province,
             'city' => $this->city,
             'owner' => new UserResource($this->owner),

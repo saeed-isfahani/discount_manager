@@ -11,7 +11,11 @@ class Shop extends Model
 
     public $guarded = ['id'];
 
-    #TODO category_id
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class);
