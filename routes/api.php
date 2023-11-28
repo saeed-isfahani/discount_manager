@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\ProvinceCityController;
+use App\Http\Controllers\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,8 +32,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
         });
     });
-    Route::resource('shop', ShopController::class)->only(['index', 'store']);
-    Route::post('shop/{shop}/logo', [ShopController::class, 'logo']);
+    Route::resource('shops', ShopController::class)->only(['index', 'store']);
+    Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{use Illuminate\Http\Request;use Illuminate\Http\Request;province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
+    Route::resource('categories', CategoriesController::class);
 });
