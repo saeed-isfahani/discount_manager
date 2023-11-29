@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidateMobileFormat;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateShopRequest extends FormRequest
 {
@@ -22,7 +24,15 @@ class UpdateShopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required',],
+            'mobile' => ['required', 'numeric', new ValidateMobileFormat],
+            'licence_number' => ['required', 'alpha_num:ascii'],
+            'shop_number' => ['required',],
+            'province_id' => ['required', Rule::exists('province_cities', 'id')->where('type', 'province')],
+            'city_id' => ['required', Rule::exists('province_cities', 'id')->where('type', 'city')],
+            'category_id' => ['required', Rule::exists('categories', 'id')],
+            'location' => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
+            'address' => ['required',],
         ];
     }
 }
