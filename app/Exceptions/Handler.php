@@ -77,6 +77,7 @@ class Handler extends ExceptionHandler
 
         return Response::message('Server Error')
             ->status(500)
+            ->data($e->getMessage())
             ->send();
     }
 
