@@ -25,7 +25,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
-        $user = $this->userRepository->findWhere([['mobile', $request->mobile]])->first();
+        $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]])->first();
         if (!$user) {
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
