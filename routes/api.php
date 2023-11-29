@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
 
         Route::middleware('auth:api')->group(function () {
+            Route::get('/password/set', [PasswordController::class, 'set'])->name('password.set');
+            Route::get('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
         });
     });
