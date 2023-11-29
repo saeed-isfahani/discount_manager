@@ -75,7 +75,9 @@ class Handler extends ExceptionHandler
 
         if (in_array($exceptionClass, $this->customExceptions)) return $e->render();
 
-        return Response::message('server error')->status(500)->send();
+        return Response::message('Server Error')
+            ->status(500)
+            ->send();
     }
 
     public static function getErrorStatusCode(Throwable $error): int
