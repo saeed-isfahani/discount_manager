@@ -63,7 +63,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
-        if (!$this->userRepository->exists('mobile', $request->mobile)) {
+        if (!$this->userRepository->exists([['mobile', '=', $request->mobile]])) {
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
