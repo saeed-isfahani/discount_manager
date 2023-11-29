@@ -20,6 +20,7 @@ return [
         'code_was_sent' => 'Code sent to you successfully',
         'mobile_is_just_verified' => 'Mobile just verified successfully',
         'user_registered_successfully' => 'User is registered successfully',
+        'profile_updated_successfully' => 'Your profile updated successfully',
     ],
     'errors' => [
         'failed' => 'These credentials do not match our records.',

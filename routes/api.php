@@ -29,4 +29,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
         });
     });
+    Route::middleware('auth:api')->group(function () {
+        Route::patch('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    });
 });
