@@ -12,6 +12,7 @@ use App\Http\Resources\ShopResource;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ShopController extends Controller
 {
@@ -61,7 +62,18 @@ class ShopController extends Controller
      */
     public function update(UpdateShopRequest $request, Shop $shop)
     {
-        //
+        if (auth()->id() != $shop->owner_id) {
+            throw new UnauthorizedException();
+        }
+
+        $result = $shop->update($request->merge(['owner_id' => auth()->user()->id])->all());
+        if ($result) {
+            return Response::message('shop.messages.shop_successfuly_updated')
+                ->data(new ShopResource($shop))
+                ->send();
+        }
+
+        return new BadRequestHttpException();
     }
 
     /**
