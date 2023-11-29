@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('auth:api')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
+            Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
         });
     });
 });

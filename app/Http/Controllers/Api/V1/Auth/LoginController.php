@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
+use App\Exceptions\BadRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginSendVerifyRequest;
 use App\Models\VerificationRequest;
@@ -33,17 +34,17 @@ class LoginController extends Controller implements LoginControllerInterface
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
             ->whereNull('veriffication_at')
             ->where('target', VerificationRequestTargetEnum::LOGIN->value)
-            ->whereTime('created_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute')))
+            ->whereTime('expire_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute'))->format('H:i:s'))
             ->latest()
             ->first();
         if (!$lastVerificationRequest) {
-            return new BadRequestHttpException();
+            throw new BadRequestHttpException();
         }
 
         $lastVerificationRequest->increment('attempts');
 
         if ($lastVerificationRequest->code != $request->code) {
-            return new BadRequestHttpException('auth.messages.code_is_invalid');
+            throw new BadRequestHttpException('auth.messages.code_is_invalid');
         }
 
         $lastVerificationRequest->update([
@@ -80,5 +81,16 @@ class LoginController extends Controller implements LoginControllerInterface
         VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN);
 
         return Response::status(200)->message('auth.messages.code_was_sent')->send();
+    }
+
+    public function logout()
+    {
+        if (!JWTAuth::parseToken()) {
+            throw new BadRequestException(__('auth.errors.user_is_not_login'));
+        }
+
+        JWTAuth::parseToken()->invalidate(false);
+
+        return Response::message('auth.messages.user_logged_out_successfully')->send();
     }
 }
