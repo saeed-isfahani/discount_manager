@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginSendVerifyRequest;
 use App\Models\VerificationRequest;
 use App\Facades\Response;
+use App\Http\Requests\Auth\LoginCheckPasswordRequest;
 use App\Http\Requests\Auth\LoginCheckVerifyRequest;
 use App\Jobs\VerificationCodeSender;
 use App\Repositories\UserRepository;
@@ -22,6 +23,24 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function __construct(public UserRepository $userRepository)
     {
+    }
+
+    public function checkPassword(LoginCheckPasswordRequest $request)
+    {
+        $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]])->first();
+        if (!$user) {
+            return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
+        }
+
+        $credentials = request(['mobile', 'password']);
+
+        if (!$token = auth()->attempt($credentials)) {
+            throw new UnauthorizedException();
+        }
+
+        return Response::message('auth.messages.you_have_successfully_logged_into_your_account')
+            ->data(['access_token' => $token])
+            ->send();
     }
 
     public function checkVerify(LoginCheckVerifyRequest $request)
@@ -60,7 +79,6 @@ class LoginController extends Controller implements LoginControllerInterface
             ->data(['access_token' => $token])
             ->send();
     }
-
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
