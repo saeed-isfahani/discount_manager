@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/password/set', [PasswordController::class, 'set'])->name('password.set');
             Route::get('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
+            Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
         });
     });
 });
