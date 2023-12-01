@@ -27,8 +27,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
 
         Route::middleware('auth:api')->group(function () {
-            Route::get('/password/set', [PasswordController::class, 'set'])->name('password.set');
-            Route::get('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
+            Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
+            Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
             Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
         });
