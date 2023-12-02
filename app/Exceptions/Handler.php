@@ -59,8 +59,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            $statusCode = $this::getErrorStatusCode($e);
-            if (app()->bound('sentry') and $statusCode == 500) {
+            if (app()->bound('sentry')) {
                 app('sentry')->captureException($e);
             }
         });
