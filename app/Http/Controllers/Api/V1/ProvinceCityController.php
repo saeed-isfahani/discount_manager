@@ -6,6 +6,7 @@ use App\Enums\ProvincesCities\ProvincesCitiesTypeEnum;
 use App\Facades\Response;
 use App\Http\Resources\ProvinceCityCollection;
 use App\Models\ProvinceCity;
+use App\Http\Controllers\Controller;
 
 class ProvinceCityController extends Controller
 {

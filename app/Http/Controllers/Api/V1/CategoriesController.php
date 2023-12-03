@@ -6,6 +6,7 @@ use App\Facades\Response;
 use App\Http\Requests\Categories\StoreCategoryRequest;
 use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Http\Resources\CategoryCollection;
+use App\Http\Controllers\Controller;
 use App\Models\Category;
 
 class CategoriesController extends Controller
