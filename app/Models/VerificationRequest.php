@@ -12,4 +12,12 @@ class VerificationRequest extends Model
     protected $guarded = [
         'id',
     ];
+
+    protected $fillable = [
+        'provider',
+        'code',
+        'receiver',
+        'expire_at',
+        'veriffication_at'
+    ];
 }

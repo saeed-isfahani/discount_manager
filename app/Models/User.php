@@ -65,7 +65,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-    
+
+    public function shops()
+    {
+        return $this->hasMany(Shop::class, 'owner_id');
+    }
+
     protected static function booted()
     {
         static::creating(function ($user) {

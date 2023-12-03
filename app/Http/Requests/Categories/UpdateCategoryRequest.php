@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Categories;
 
 use App\Rules\ValidateMobileFormat;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class UpdateCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "mobile" => ['required', 'numeric', new ValidateMobileFormat],
-            "code" => ['required', 'numeric', 'digits:6'],
-            "first_name" => ['required', 'string', 'min:3', 'max:20'],
-            "last_name" => ['required', 'string', 'min:3', 'max:20'],
-            "email" => ['email']
+            "name" => ['required', 'string', 'min:3,max:20']
         ];
     }
 }

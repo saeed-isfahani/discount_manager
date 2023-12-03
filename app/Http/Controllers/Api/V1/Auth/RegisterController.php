@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\RegisterControllerInterface;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
@@ -62,11 +62,14 @@ class RegisterController extends Controller implements RegisterControllerInterfa
 
         $this->VerificationRequestRepository->increment($verificationCodeIsValid, 'attempts');
         if ($verificationCodeIsValid and $verificationCodeIsValid->code != $request->code) {
+            $verificationCodeIsValid->update([
+                'attempts' => $verificationCodeIsValid->attempts + 1
+            ]);
             throw new BadRequestException(__('auth.errors.mobile_or_code_wrong_or_code_expired'));
         }
 
         $verificationCodeIsValid->update([
-            'veriffication_at' => now(),
+            'veriffication_at' => Carbon::now()
         ]);
 
         return Response::message('auth.messages.mobile_is_just_verified')->send();
