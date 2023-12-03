@@ -27,6 +27,7 @@ deploy-job:
   script:
     - echo "Deploying application..."
     - sudo docker compose -f /app/discount/backend/docker-compose.yml up -d 
+    - sudo docker exec -it discount php artisan migrate
     - echo "Application successfully deployed."
   needs: 
     - build-job
