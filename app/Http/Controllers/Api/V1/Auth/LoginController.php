@@ -51,13 +51,13 @@ class LoginController extends Controller implements LoginControllerInterface
 
         $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($request->mobile)->first();
         if (!$lastVerificationRequest) {
-            throw new BadRequestHttpException('BadRequestHttpException');
+            throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
         }
 
         $lastVerificationRequest->increment('attempts');
 
         if ($lastVerificationRequest->code != $request->code) {
-            throw new BadRequestHttpException('auth.messages.code_is_invalid');
+            throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
         }
 
         $lastVerificationRequest->update([
