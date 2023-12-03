@@ -51,7 +51,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
         $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($request->mobile)->first();
         if (!$lastVerificationRequest) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('BadRequestHttpException');
         }
 
         $lastVerificationRequest->increment('attempts');
@@ -66,7 +66,7 @@ class LoginController extends Controller implements LoginControllerInterface
 
         $token = JWTAuth::fromUser($user);
         if (!$token) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('UnauthorizedException');
         }
 
         return Response::message('auth.messages.you_have_successfully_logged_into_your_account')
