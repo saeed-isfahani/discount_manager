@@ -5,8 +5,8 @@ use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\ShopController;
-use App\Http\Controllers\ProvinceCityController;
-use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\Api\V1\ProvinceCityController;
+use App\Http\Controllers\Api\V1\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 /*
