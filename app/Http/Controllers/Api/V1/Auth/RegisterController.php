@@ -79,7 +79,7 @@ class RegisterController extends Controller implements RegisterControllerInterfa
     public function register(RegisterRequest $request)
     {
         $mobileIsVerified = VerificationRequest::where('receiver', $request->mobile)
-            ->where('expire_at', '>', Carbon::now())
+            ->where('expire_at', '>', now()->format('Y-m-d H:i:s'))
             ->where('veriffication_at', 'IS NOT', null)
             ->first();
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -23,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'first_name',
         'last_name',
+        'full_name',
         'mobile',
     ];
 
@@ -75,6 +77,7 @@ class User extends Authenticatable implements JWTSubject
     {
         static::creating(function ($user) {
             $user->full_name = $user->first_name . ' ' . $user->last_name;
+            $user->unique_id = Str::uuid()->toString();
         });
     }
 }
