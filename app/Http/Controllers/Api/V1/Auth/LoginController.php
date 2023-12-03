@@ -20,6 +20,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller implements LoginControllerInterface
 {
+    public function __construct(public UserRepository $userRepository)
+    {
+    }
+
     public function checkPassword(LoginCheckPasswordRequest $request)
     {
         $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]])->first();
