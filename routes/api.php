@@ -40,8 +40,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::resource('shops', ShopController::class)->only(['index', 'store']);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
-        Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
-        Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
         Route::resource('categories', CategoriesController::class);
     });
+    Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
+    Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
 });
