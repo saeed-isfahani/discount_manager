@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
+use App\Exceptions\BadRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginSendVerifyRequest;
 use App\Models\VerificationRequest;
 use App\Facades\Response;
+use App\Http\Requests\Auth\LoginCheckPasswordRequest;
 use App\Http\Requests\Auth\LoginCheckVerifyRequest;
 use App\Jobs\VerificationCodeSender;
 use App\Repositories\UserRepository;
@@ -23,6 +25,24 @@ class LoginController extends Controller implements LoginControllerInterface
     {
     }
 
+    public function checkPassword(LoginCheckPasswordRequest $request)
+    {
+        $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]])->first();
+        if (!$user) {
+            return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
+        }
+
+        $credentials = request(['mobile', 'password']);
+
+        if (!$token = auth()->attempt($credentials)) {
+            throw new UnauthorizedException();
+        }
+
+        return Response::message('auth.messages.you_have_successfully_logged_into_your_account')
+            ->data(['access_token' => $token])
+            ->send();
+    }
+
     public function checkVerify(LoginCheckVerifyRequest $request)
     {
         $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]])->first();
@@ -33,17 +53,17 @@ class LoginController extends Controller implements LoginControllerInterface
         $lastVerificationRequest = VerificationRequest::where('receiver', $request->mobile)
             ->whereNull('veriffication_at')
             ->where('target', VerificationRequestTargetEnum::LOGIN->value)
-            ->whereTime('created_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute')))
+            ->whereTime('expire_at', '>=', now()->subMinute(config('settings.verification_request_timeout_in_minute'))->format('H:i:s'))
             ->latest()
             ->first();
         if (!$lastVerificationRequest) {
-            return new BadRequestHttpException();
+            throw new BadRequestHttpException();
         }
 
         $lastVerificationRequest->increment('attempts');
 
         if ($lastVerificationRequest->code != $request->code) {
-            return new BadRequestHttpException('auth.messages.code_is_invalid');
+            throw new BadRequestHttpException('auth.messages.code_is_invalid');
         }
 
         $lastVerificationRequest->update([
@@ -59,7 +79,6 @@ class LoginController extends Controller implements LoginControllerInterface
             ->data(['access_token' => $token])
             ->send();
     }
-
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
@@ -80,5 +99,16 @@ class LoginController extends Controller implements LoginControllerInterface
         VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN);
 
         return Response::status(200)->message('auth.messages.code_was_sent')->send();
+    }
+
+    public function logout()
+    {
+        if (!JWTAuth::parseToken()) {
+            throw new BadRequestException(__('auth.errors.user_is_not_login'));
+        }
+
+        JWTAuth::parseToken()->invalidate(false);
+
+        return Response::message('auth.messages.user_logged_out_successfully')->send();
     }
 }

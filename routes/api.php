@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\ShopController;
@@ -24,12 +25,16 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/login/send-verify', [LoginController::class, 'sendVerify'])->name('login.sendVerify');
         Route::post('/login/check-verify', [LoginController::class, 'checkVerify'])->name('login.checkVerify');
+        Route::post('/login/check-password', [LoginController::class, 'checkPassword'])->name('login.checkPassword');
         Route::post('/register', [RegisterController::class, 'register'])->name('register');
         Route::post('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('register.sendVerify');
         Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
 
         Route::middleware('auth:api')->group(function () {
+            Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
+            Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
+            Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
         });
     });
     Route::resource('shops', ShopController::class)->only(['index', 'store']);
