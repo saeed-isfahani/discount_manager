@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => fake()->password(),
             'remember_token' => null,
-            'mobile' => fake()->numerify('0912#######'),
+            'mobile' => fake()->numerify('98910#######'),
         ];
     }
 
