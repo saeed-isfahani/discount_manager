@@ -6,7 +6,7 @@ use App\Facades\Response;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Validation\UnauthorizedException;
+use App\Exceptions\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
@@ -28,6 +28,7 @@ class Handler extends ExceptionHandler
     private $customExceptions = [
         ForbiddenAccessException::class,
         BadRequestException::class,
+        UnauthorizedException::class,
     ];
 
     private $customErrors = [
