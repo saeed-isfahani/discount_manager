@@ -126,7 +126,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return array|object
      */
-    public function findWhere(array $wheres, bool $first = false, array $columns = ['*']): array|object
+    public function findWhere(array $wheres, bool $first = false, array $columns = ['*'])
     {
         $query = $this->model->newQuery();
 
