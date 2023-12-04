@@ -9,18 +9,6 @@ class ProvinceCity extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'type',
-        'parent_id',
-        'unique_id'
-    ];
-
     protected $guarded = [
         'id',
     ];
