@@ -5,24 +5,21 @@ namespace App\Exceptions;
 use App\Facades\Response;
 use Exception;
 
-abstract class CustomException extends Exception
+class CustomException extends Exception
 {
-    public function __construct()
-    {
-        parent::__construct($this->message(), $this->status());
+    public function __construct(
+        public string $msg,
+        public int $status,
+        public array $errors = []
+    ) {
+        parent::__construct($this->msg, $this->status);
     }
-
-    abstract public function status(): string;
-
-    abstract public function message(): string;
-
-    abstract public function errors(): array;
 
     public function render()
     {
-        return Response::message($this->message())
-            ->status($this->status())
-            ->errors($this->errors())
+        return Response::message($this->msg)
+            ->status($this->status)
+            ->errors($this->errors)
             ->send();
     }
 
