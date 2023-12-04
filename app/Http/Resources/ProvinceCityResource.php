@@ -17,7 +17,7 @@ class ProvinceCityResource extends JsonResource
         return [
             "name" => $this->name,
             "type" => $this->type,
-            "unique_id" => $this->unique_id,
+            "id" => $this->id,
         ];
     }
 }

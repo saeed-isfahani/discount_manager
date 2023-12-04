@@ -12,9 +12,4 @@ class ProvinceCity extends Model
     protected $guarded = [
         'id',
     ];
-
-    public function getRouteKeyName()
-    {
-        return 'unique_id';
-    }
 }
