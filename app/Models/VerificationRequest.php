@@ -14,14 +14,6 @@ class VerificationRequest extends Model
         'id',
     ];
 
-    protected $fillable = [
-        'provider',
-        'code',
-        'receiver',
-        'expire_at',
-        'veriffication_at'
-    ];
-
     public function scopeLatestValidLoginRequestByMobile($query, $mobile)
     {
         return $query
