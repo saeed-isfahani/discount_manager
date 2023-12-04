@@ -41,7 +41,7 @@ class VerificationCodeSender implements ShouldQueue
             'provider' => $this->provider,
             'code' => $verificationCode,
             'receiver' => $this->mobile,
-            'target' => $this->target,
+            'target' => $this->target->value,
             'expire_at' => now()->addMinutes(config('settings.verification_request_timeout_in_minute')),
         ]);
 

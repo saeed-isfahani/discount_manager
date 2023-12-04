@@ -90,7 +90,7 @@ class LoginController extends Controller implements LoginControllerInterface
             return Response::status(200)->message('auth.messages.code_was_sent')->send();
         }
 
-        VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN->value);
+        VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN);
 
         return Response::status(200)->message('auth.messages.code_was_sent')->send();
     }
