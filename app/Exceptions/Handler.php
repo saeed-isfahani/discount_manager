@@ -2,15 +2,17 @@
 
 namespace App\Exceptions;
 
-use App\Facades\Response;
+use Throwable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\ForbiddenAccessException;
 use App\Exceptions\UnauthorizedException;
+use App\Exceptions\BadRequestException;
+use App\Exceptions\NotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -29,6 +31,7 @@ class Handler extends ExceptionHandler
         ForbiddenAccessException::class,
         BadRequestException::class,
         UnauthorizedException::class,
+        NotFoundException::class,
     ];
 
     private $customErrors = [
@@ -68,21 +71,26 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        if ($this->shouldHandleException()) {
+            $this->handleCustomException($e);
+        }
+
+        return parent::render($request, $e);
+    }
+
+    protected function shouldHandleException()
+    {
+        return app()->environment('production') || true;
+    }
+
+    protected function handleCustomException(Throwable $e)
+    {
         $exceptionClass = get_class($e);
         if (in_array($exceptionClass, array_keys($this->customErrors))) {
             $errors = (isset($e->validator) ? $e->validator->getMessageBag()->messages() : []);
             throw new $this->customErrors[$exceptionClass]['exception'](__($this->customErrors[$exceptionClass]['message']), $errors);
+        } else if (in_array($exceptionClass, $this->customExceptions)) {
+            return $e->render();
         }
-
-        if (in_array($exceptionClass, $this->customExceptions)) return $e->render();
-
-        return Response::message($e->getMessage())
-            ->status(500)
-            ->send();
-    }
-
-    public static function getErrorStatusCode(Throwable $error): int
-    {
-        return method_exists($error, 'getStatusCode') ? $error->getStatusCode() : 500;
     }
 }
