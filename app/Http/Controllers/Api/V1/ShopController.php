@@ -83,7 +83,8 @@ class ShopController extends Controller
      */
     public function destroy(Shop $shop)
     {
-        //
+        $shop->delete();
+        return Response::message('shop deleted successfully')->send();
     }
 
     public function logo(UploadShopLogoRequest $request, Shop $shop)
