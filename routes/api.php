@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,7 +39,7 @@ Route::prefix('v1')->group(function () {
         });
     });
     Route::middleware('auth:api')->group(function () {
-        Route::resource('shops', ShopController::class)->only(['index', 'store']);
+        Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
         Route::resource('categories', CategoriesController::class);
     });

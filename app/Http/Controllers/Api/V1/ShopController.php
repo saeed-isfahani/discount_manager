@@ -46,7 +46,9 @@ class ShopController extends Controller
      */
     public function show(Shop $shop)
     {
-        //
+        return Response::message('general.messages.successfull')
+            ->data(new ShopResource($shop))
+            ->send();
     }
 
     /**
