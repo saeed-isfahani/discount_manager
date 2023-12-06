@@ -29,6 +29,8 @@ class ShopResource extends JsonResource
             'owner' => new UserResource($this->owner),
             //
             'logo' => $this->logo,
+            //
+            'created_at' => $this->created_at,
         ];
     }
 }
