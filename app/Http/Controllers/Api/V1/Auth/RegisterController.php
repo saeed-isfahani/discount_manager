@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\RegisterControllerInterface;
+use App\Enums\VerificationRequest\UserStatusEnum;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
 use App\Exceptions\BadRequestException;
@@ -91,7 +92,8 @@ class RegisterController extends Controller implements RegisterControllerInterfa
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'mobile' => $request->mobile,
-            'email' => $request->email
+            'email' => $request->email,
+            'status' => UserStatusEnum::ACTIVE->value,
         ]);
 
         $token = JWTAuth::fromUser($user);

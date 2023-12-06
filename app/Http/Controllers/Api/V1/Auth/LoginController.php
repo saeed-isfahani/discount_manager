@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Contracts\Controller\Api\V1\Auth\LoginControllerInterface;
+use App\Enums\VerificationRequest\UserStatusEnum;
 use App\Enums\VerificationRequest\VerificationRequestProviderEnum;
 use App\Enums\VerificationRequest\VerificationRequestTargetEnum;
 use App\Exceptions\BadRequestException;
@@ -31,7 +32,11 @@ class LoginController extends Controller implements LoginControllerInterface
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
-        $credentials = request(['mobile', 'password']);
+        $credentials = [
+            'mobile' => $request->mobile,
+            'password' => $request->password,
+            'status' => UserStatusEnum::ACTIVE->value,
+        ];
 
         if (!$token = auth()->attempt($credentials)) {
             throw new UnauthorizedException();

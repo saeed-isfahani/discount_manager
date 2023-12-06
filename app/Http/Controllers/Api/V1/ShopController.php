@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\UploadShopLogoRequest;
@@ -20,9 +21,9 @@ class ShopController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
+    public function index(PaginateRequest $request)
     {
-        $shops = auth()->user()->shops()->paginate(50);
+        $shops = auth()->user()->shops()->paginate($request->per_page ?? 5);
 
         return Response::message('shop.messages.shop_list_found_successfully')
             ->data(new ShopCollection($shops))

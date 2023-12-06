@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
-use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\Auth\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +36,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
             Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
             Route::patch('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::get('/users', [UserController::class, 'index'])->name('user.index');
+            Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
+            Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
         });
     });
     Route::middleware('auth:api')->group(function () {
