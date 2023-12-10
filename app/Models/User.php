@@ -73,9 +73,4 @@ class User extends Authenticatable implements JWTSubject
             $user->full_name = $user->first_name . ' ' . $user->last_name;
         });
     }
-
-    public function getRouteKeyName()
-    {
-        return 'unique_id';
-    }
 }
