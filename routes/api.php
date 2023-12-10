@@ -31,20 +31,20 @@ Route::prefix('v1')->group(function () {
         Route::post('/register/send-verify', [RegisterController::class, 'sendVerify'])->name('register.sendVerify');
         Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
         Route::middleware('auth:api')->group(function () {
-            Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
-            Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
             Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
             Route::patch('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-            Route::get('/users', [UserController::class, 'index'])->name('user.index');
-            Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
-            Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
         });
     });
     Route::middleware('auth:api')->group(function () {
         Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
         Route::resource('categories', CategoriesController::class);
+        Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
+        Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
+        Route::get('/users', [UserController::class, 'index'])->name('user.index');
+        Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
+        Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
