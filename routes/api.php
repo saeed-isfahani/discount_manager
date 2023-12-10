@@ -43,6 +43,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
         Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
         Route::get('/users', [UserController::class, 'index'])->name('user.index');
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
+        Route::get('/users/{user}/update', [UserController::class, 'update'])->name('user.update');
         Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
         Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
     });
