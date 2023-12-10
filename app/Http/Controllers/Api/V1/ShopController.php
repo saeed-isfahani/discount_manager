@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\Shop\ShopStatusEnum;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
@@ -23,8 +24,19 @@ class ShopController extends Controller
 
     public function index(PaginateRequest $request)
     {
-        $shops = auth()->user()->shops()->paginate($request->per_page ?? 5);
+        $shops = new Shop;
+        if ($request->q) {
+            $shops = $shops->where('title', 'LIKE', '%' . $request->q . '%');
+        }
+        if ($request->status) {
+            $shops = $shops->where('status', $request->status);
+        }
+        if ($request->date) {
+            $shops = $shops->whereDate('created_at', $request->date);
+        }
 
+        $shops = $shops->paginate($request->per_page ?? 5);
+        
         return Response::message('shop.messages.shop_list_found_successfully')
             ->data(new ShopCollection($shops))
             ->send();
@@ -108,5 +120,25 @@ class ShopController extends Controller
                 ->data(new ShopResource($shop))
                 ->send();
         }
+    }
+
+    public function active(Shop $shop)
+    {
+        $shop->update([
+            'status' => ShopStatusEnum::ACTIVE->value,
+        ]);
+        return Response::message('general.messages.successfull')
+            ->data(new ShopResource($shop))
+            ->send();
+    }
+
+    public function deactive(Shop $shop)
+    {
+        $shop->update([
+            'status' => ShopStatusEnum::DEACTIVE->value,
+        ]);
+        return Response::message('general.messages.successfull')
+            ->data(new ShopResource($shop))
+            ->send();
     }
 }

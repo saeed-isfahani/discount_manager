@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Shop\ShopStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class PaginateRequest extends FormRequest
 {
@@ -23,6 +25,9 @@ class PaginateRequest extends FormRequest
     {
         return [
             'per_page' => ['nullable', 'integer', 'min:1'],
+            'q' => ['nullable', 'string', 'max:30'],
+            'date' => ['nullable', 'date'],
+            'status' => ['nullable', new Enum(ShopStatusEnum::class)],
         ];
     }
 }

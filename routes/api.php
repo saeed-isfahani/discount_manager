@@ -39,6 +39,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
+        Route::post('shops/{shop}/active', [ShopController::class, 'active'])->name('shop.active');
+        Route::post('shops/{shop}/deactive', [ShopController::class, 'deactive'])->name('shop.deactive');
         Route::resource('categories', CategoriesController::class);
         Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
         Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
