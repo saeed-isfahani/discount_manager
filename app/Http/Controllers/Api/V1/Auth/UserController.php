@@ -28,14 +28,14 @@ class UserController extends Controller
 
         $users = $users->orderBy('updated_at', 'DESC')->paginate($request->per_page ?? 5);
 
-        return Response::message('shop.messages.shop_list_found_successfully')
+        return Response::message('user.messages.user_list_found_successfully')
             ->data(new UserCollection($users))
             ->send();
     }
 
     public function show(User $user)
     {
-        return Response::message('shop.messages.shop_list_found_successfully')
+        return Response::message('user.messages.user_list_found_successfully')
             ->data(new UserResource($user))
             ->send();
     }
@@ -44,7 +44,7 @@ class UserController extends Controller
     {
         $result = $user->update($request->all());
         if ($result) {
-            return Response::message('shop.messages.user_successfuly_updated')
+            return Response::message('user.messages.user_successfuly_updated')
                 ->data(new UserResource($user))
                 ->send();
         }

@@ -7,6 +7,7 @@ use App\Http\Requests\Categories\StoreCategoryRequest;
 use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaginateRequest;
 use App\Models\Category;
 
 class CategoriesController extends Controller
@@ -14,10 +15,21 @@ class CategoriesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(PaginateRequest $request)
     {
-        $categories = Category::all();
-        return Response::data(new CategoryCollection($categories))->send();
+        $categories = new Category();
+        if ($request->q) {
+            $categories = $categories->where('title', 'LIKE', '%' . $request->q . '%');
+        }
+        if ($request->date) {
+            $categories = $categories->whereDate('created_at', $request->date);
+        }
+
+        $categories = $categories->paginate($request->per_page ?? 5);
+        
+        return Response::message('category.messages.category_list_found_successfully')
+            ->data(new CategoryCollection($categories))
+            ->send();
     }
 
     /**
