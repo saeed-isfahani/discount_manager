@@ -13,12 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shops', function (Blueprint $table) {
-            Schema::table('shops', function (Blueprint $table) {
-                $table->enum('status', [
-                    ShopStatusEnum::ACTIVE->value,
-                    ShopStatusEnum::DEACTIVE->value,
-                ])->default(ShopStatusEnum::ACTIVE->value);
-            });
+            $table->enum('status', [
+                ShopStatusEnum::ACTIVE->value,
+                ShopStatusEnum::DEACTIVE->value,
+            ])->default(ShopStatusEnum::ACTIVE->value);
         });
     }
 
