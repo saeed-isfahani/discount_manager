@@ -68,5 +68,14 @@ class User extends Authenticatable implements JWTSubject
         static::creating(function ($user) {
             $user->full_name = $user->first_name . ' ' . $user->last_name;
         });
+
+        static::updating(function ($user) {
+            $user->full_name = $user->first_name . ' ' . $user->last_name;
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'unique_id';
     }
 }
