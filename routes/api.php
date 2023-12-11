@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\Auth\UserController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,7 @@ Route::prefix('v1')->group(function () {
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
         Route::resource('categories', CategoriesController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
+        Route::resource('roles', RoleController::class)->except(['create']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
