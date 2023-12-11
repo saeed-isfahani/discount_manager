@@ -36,7 +36,7 @@ class ShopController extends Controller
         }
 
         $shops = $shops->paginate($request->per_page ?? 5);
-        
+
         return Response::message('shop.messages.shop_list_found_successfully')
             ->data(new ShopCollection($shops))
             ->send();
@@ -108,9 +108,10 @@ class ShopController extends Controller
 
         $logo = $request->file('logo');
 
-        $uri = 'shop\\logo\\' . $logo->hashName();
+        $path = 'shop/logo/' . $logo->hashName();
+        $fileName = $logo->hashName() . '.' . $logo->extension();
 
-        if (Storage::put($uri, $logo) and $shop->update(['logo' => $uri])) {
+        if (Storage::putFileAs($path, $logo, $fileName) and $shop->update(['logo' => $path . '/' . $fileName])) {
             return Response::message('shop.messages.shop_logo_successfuly_uploaded')
                 ->data(new ShopResource($shop))
                 ->send();
