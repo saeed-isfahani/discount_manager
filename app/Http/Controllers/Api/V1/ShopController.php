@@ -108,7 +108,7 @@ class ShopController extends Controller
 
         $logo = $request->file('logo');
 
-        $path = 'shop/logo/' . $logo->hashName();
+        $path = 'shop/logo/';
         $fileName = $logo->hashName() . '.' . $logo->extension();
 
         if (Storage::putFileAs($path, $logo, $fileName) and $shop->update(['logo' => $path . '/' . $fileName])) {
