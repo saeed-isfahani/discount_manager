@@ -112,7 +112,7 @@ class ShopController extends Controller
         $fileName = $logo->hashName() . '.' . $logo->extension();
 
         if (Storage::putFileAs($path, $logo, $fileName) and $shop->update(['logo' => $path . '/' . $fileName])) {
-            return Response::message('shop.messages.shop_logo_successfuly_uploaded')
+            return Response::message('shop.messages.shop_logo_unsuccessfuly_uploaded')
                 ->data(new ShopResource($shop))
                 ->send();
         } else {
