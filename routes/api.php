@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\Auth\UserController;
+use App\Http\Controllers\Api\V1\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
         Route::resource('categories', CategoriesController::class);
+        Route::get('permissions', [PermissionController::class, 'index']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
