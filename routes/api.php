@@ -34,6 +34,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
             Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
             Route::patch('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
+            Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
         });
     });
     Route::middleware('auth:api')->group(function () {
@@ -42,8 +44,6 @@ Route::prefix('v1')->group(function () {
         Route::post('shops/{shop}/active', [ShopController::class, 'active'])->name('shop.active');
         Route::post('shops/{shop}/deactive', [ShopController::class, 'deactive'])->name('shop.deactive');
         Route::resource('categories', CategoriesController::class);
-        Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
-        Route::post('/password/remove', [PasswordController::class, 'remove'])->name('password.remove');
         Route::get('/users', [UserController::class, 'index'])->name('user.index');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
         Route::patch('/users/{user}', [UserController::class, 'update'])->name('user.update');
