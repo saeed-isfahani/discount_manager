@@ -45,8 +45,8 @@ Route::prefix('v1')->group(function () {
         });
     });
     Route::middleware('auth:api')->group(function () {
-        Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
+        Route::resource('shops', ShopController::class)->except(['create', 'edit']);
         Route::resource('categories', CategoriesController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
         Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
