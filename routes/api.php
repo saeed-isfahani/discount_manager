@@ -48,6 +48,7 @@ Route::prefix('v1')->group(function () {
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
         Route::resource('categories', CategoriesController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
+        Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
         Route::resource('roles', RoleController::class)->except(['create']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
