@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\Auth\UserController;
 use App\Http\Controllers\Api\V1\PermissionController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::get('permissions', [PermissionController::class, 'index']);
         Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
         Route::resource('roles', RoleController::class)->except(['create']);
+        Route::resource('products', ProductController::class)->except(['create', 'edit']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');

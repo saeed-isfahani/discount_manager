@@ -19,7 +19,7 @@ class Product extends Model
     protected static function booted()
     {
         static::creating(function ($shop) {
-            $shop->uuid = uniqid();
+            $shop->unique_id = uniqid();
         });
     }
 
