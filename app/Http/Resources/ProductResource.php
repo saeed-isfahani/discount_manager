@@ -23,6 +23,8 @@ class ProductResource extends JsonResource
             'min_price' => $this->min_price,
             'max_price' => $this->max_price,
             'category' => new CategoryResource($this->category),
+            'expire_at' => $this->expire_at,
+            'expire_soon' => $this->expire_soon
         ];
     }
 }

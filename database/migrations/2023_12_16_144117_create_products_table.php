@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->text('description');
-            
+
             $table->string('image')->nullable();
 
             $table->double('price');
@@ -26,7 +26,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->on('categories')->references('id')->onDelete('cascade')->onUpdate('cascade');
-            
+
+            $table->date('expire_at')->nullable();
+            $table->boolean('expire_soon')->nullable();
+
             $table->timestamps();
         });
     }
