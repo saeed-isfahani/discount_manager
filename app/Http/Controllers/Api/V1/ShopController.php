@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\Shop\ShopStatusEnum;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
@@ -108,5 +109,25 @@ class ShopController extends Controller
                 ->data(new ShopResource($shop))
                 ->send();
         }
+    }
+
+    public function activate(Shop $shop)
+    {
+        $shop->update([
+            'status' => ShopStatusEnum::ACTIVE->value,
+        ]);
+        return Response::message('general.messages.successfull')
+            ->data(new ShopResource($shop))
+            ->send();
+    }
+
+    public function deactivate(Shop $shop)
+    {
+        $shop->update([
+            'status' => ShopStatusEnum::DEACTIVE->value,
+        ]);
+        return Response::message('general.messages.successfull')
+            ->data(new ShopResource($shop))
+            ->send();
     }
 }

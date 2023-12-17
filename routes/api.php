@@ -46,6 +46,8 @@ Route::prefix('v1')->group(function () {
     });
     Route::middleware('auth:api')->group(function () {
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
+        Route::patch('shops/{shop}/activate', [ShopController::class, 'activate']);
+        Route::patch('shops/{shop}/deactivate', [ShopController::class, 'deactivate']);
         Route::resource('shops', ShopController::class)->except(['create', 'edit']);
         Route::resource('categories', CategoriesController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
