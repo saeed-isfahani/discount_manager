@@ -52,6 +52,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('categories', CategoriesController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
         Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
+        Route::patch('roles/{role}/assign-permission', [RoleController::class, 'assignPermission']);
         Route::resource('roles', RoleController::class)->except(['create']);
         Route::resource('products', ProductController::class)->except(['create', 'edit']);
     });

@@ -11,6 +11,7 @@ use App\Http\Resources\RoleCollection;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\assignPermissionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -67,7 +68,7 @@ class RoleController extends Controller
 
     public function usersWithRoles(GetRoleUsersRequest $request)
     {
-        if($request->validated('role') and !Role::where('name', $request->validated('role'))->exists()){
+        if ($request->validated('role') and !Role::where('name', $request->validated('role'))->exists()) {
             throw new BadRequestException('role is not exists');
         }
 
@@ -84,5 +85,12 @@ class RoleController extends Controller
         $users = $usersQuery->paginate($request->per_page ?? 5);
 
         return Response::message('User with roles founded successfully')->data(new UserCollection($users))->send();
+    }
+
+    public function assignPermission(Role $role, assignPermissionRequest $request)
+    {
+        $role->givePermissionTo($request->permissions);
+
+        return Response::message('Permissions assigns to role successfully')->data(new RoleResource($role))->send();
     }
 }
