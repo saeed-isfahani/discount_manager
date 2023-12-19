@@ -16,9 +16,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $roles = Permission::all()->pluck('name');
+        $permissions = Permission::all()->pluck('name');
 
-        return Response::message('permissions list find successfully')->data($roles)->send();
+        return Response::message('permissions list find successfully')->data($permissions)->send();
     }
 
     /**

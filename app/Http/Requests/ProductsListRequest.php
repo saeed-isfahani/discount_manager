@@ -22,7 +22,8 @@ class ProductsListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'q' => 'string|min:3,max:30'
+            'q' => 'string|min:3,max:30',
+            'per_page' => 'nullable|integer'
         ];
     }
 }

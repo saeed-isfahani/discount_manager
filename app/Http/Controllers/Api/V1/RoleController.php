@@ -68,18 +68,16 @@ class RoleController extends Controller
 
     public function usersWithRoles(GetRoleUsersRequest $request)
     {
-        if ($request->validated('role') and !Role::where('name', $request->validated('role'))->exists()) {
-            throw new BadRequestException('role is not exists');
-        }
-
         $usersQuery = new User();
 
         if ($request->validated('role')) {
             $usersQuery = $usersQuery->role($request->validated('role'));
         }
         if ($request->validated('user')) {
-            $usersQuery->where('full_name', 'LIKE', '%' . $request->validated('user') . '%');
-            $usersQuery = $usersQuery->orWhere('email', 'LIKE', '%' . $request->validated('user') . '%');
+            $usersQuery = $usersQuery->where(function ($query, $request) {
+                return $query->where('full_name', 'LIKE', '%' . $request->validated('user') . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->validated('user') . '%');
+            });
         }
 
         $users = $usersQuery->paginate($request->per_page ?? 5);

@@ -22,7 +22,7 @@ class GetRoleUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role' => 'string|min:3,max:50',
+            'role' => 'string|min:3,max:50|exists:roles,name',
             'user' => 'string|min:3,max:50'
         ];
     }
