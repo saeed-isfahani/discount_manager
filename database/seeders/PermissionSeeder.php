@@ -2,71 +2,74 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class PermissionSeeder extends Seeder
 {
+    private array $modules = [
+        'role', 'shop', 'user',
+        'product', 'category'
+    ];
+
+    private array $pluralActions = [
+        'List'
+    ];
+
+    private array $singularActions = [
+        'View', 'Create', 'Update', 'Delete', 'Excel'
+    ];
+
+    private array $menuItems = [
+        'Dashboard', 'Shops', 'Users',
+        'Products', 'Categories', 'Roles',
+        'Profile'
+    ];
+
+    private string $defaultRole = 'Super Admin';
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $permissionArray = [
-            [
-                'name' => '1',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '2',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '3',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '4',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '5',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '6',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '7',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '8',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '9',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => '10',
-                'guard_name' => 'api',
-            ]
-        ];
-
-        $permissions = [];
-        foreach ($permissionArray as $permission) {
-
-            $insertPermission = [
-                'name' => $permission['name'],
-                'guard_name' => $permission['guard_name'],
-            ];
-            $permissions[] = Permission::firstOrCreate($insertPermission)->name;
+        foreach ($this->modules as $module) {
+            $plural = Str::plural($module);
+            $singular = $module;
+            foreach ($this->pluralActions as $action) {
+                Permission::firstOrCreate([
+                    'name' => $action . ' ' . $plural
+                ]);
+            }
+            foreach ($this->singularActions as $action) {
+                Permission::firstOrCreate([
+                    'name' => $action . ' ' . $singular
+                ]);
+            }
         }
 
-        Permission::whereNotIn('name', $permissions)->delete();
+        foreach ($this->menuItems as $menuItem) {
+            Permission::firstOrCreate([
+                'name' => $menuItem
+            ]);
+        }
+
+        // Create default role
+        $role = Role::firstOrCreate([
+            'name' => $this->defaultRole
+        ]);
+
+        // Add all permissions to default role
+        $role->syncPermissions(Permission::all()->pluck('name')->toArray());
+
+        // Assign default role to first database user
+        if ($user = User::first()) {
+            $user->syncRoles([$this->defaultRole]);
+        }
     }
 }
