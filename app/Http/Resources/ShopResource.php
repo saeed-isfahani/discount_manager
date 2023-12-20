@@ -29,6 +29,7 @@ class ShopResource extends JsonResource
             'province' => $this->province,
             'city' => $this->city,
             'owner' => new UserResource($this->owner),
+            'status' => $this->status,
             //
             'logo' => Storage::url($this->logo),
             //

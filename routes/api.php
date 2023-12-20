@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\V1\ShopController;
 use App\Http\Controllers\Api\V1\ProvinceCityController;
 use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\Auth\UserController;
+use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,16 +42,19 @@ Route::prefix('v1')->group(function () {
         });
     });
     Route::middleware('auth:api')->group(function () {
-        Route::resource('shops', ShopController::class)->only(['index', 'store', 'show', 'update',]);
         Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
-        Route::post('shops/{shop}/active', [ShopController::class, 'active'])->name('shop.active');
-        Route::post('shops/{shop}/deactive', [ShopController::class, 'deactive'])->name('shop.deactive');
-        Route::resource('categories', CategoriesController::class);
-        Route::get('/users', [UserController::class, 'index'])->name('user.index');
-        Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
-        Route::patch('/users/{user}', [UserController::class, 'update'])->name('user.update');
         Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
         Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
+        Route::patch('shops/{shop}/activate', [ShopController::class, 'activate']);
+        Route::patch('shops/{shop}/deactivate', [ShopController::class, 'deactivate']);
+        Route::resource('shops', ShopController::class)->except(['create', 'edit']);
+        Route::resource('categories', CategoriesController::class);
+        Route::resource('users', UserController::class)->only(['index', 'show', 'update']);
+        Route::get('permissions', [PermissionController::class, 'index']);
+        Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
+        Route::patch('roles/{role}/assign-permission', [RoleController::class, 'assignPermission']);
+        Route::resource('roles', RoleController::class)->except(['create']);
+        Route::resource('products', ProductController::class)->except(['create', 'edit']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');

@@ -124,7 +124,7 @@ class ShopController extends Controller
         }
     }
 
-    public function active(Shop $shop)
+    public function activate(Shop $shop)
     {
         $shop->update([
             'status' => ShopStatusEnum::ACTIVE->value,
@@ -134,7 +134,7 @@ class ShopController extends Controller
             ->send();
     }
 
-    public function deactive(Shop $shop)
+    public function deactivate(Shop $shop)
     {
         $shop->update([
             'status' => ShopStatusEnum::DEACTIVE->value,
