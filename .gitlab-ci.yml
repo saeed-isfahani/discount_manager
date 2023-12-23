@@ -14,7 +14,7 @@ build-job:
   stage: build
   script:
     - echo "Building the image ..."
-    - sudo  mc cp discount/discount/backend/.env /app/discount/backend/env/
+    - mc cp discount/discount/backend/.env /app/discount/backend/env/
     - docker build --build-arg NODE_ENV=development -t discount:v1.$CI_PIPELINE_IID -t discount:latest .
     - echo "Building complete."  
   tags:
@@ -27,8 +27,8 @@ deploy-job:
   environment: development
   script:
     - echo "Deploying application..."
-    - sudo docker compose -f /app/discount/backend/docker-compose.yml up -d 
-    - sudo docker exec -i discount php artisan migrate
+    - docker compose -f /app/discount/backend/docker-compose.yml up -d 
+    - docker exec -i discount php artisan migrate
     - echo "Application successfully deployed."
   needs: 
     - build-job
