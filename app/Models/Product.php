@@ -9,6 +9,17 @@ class Product extends Model
 {
     use HasFactory;
 
+    public $fillable = [
+        'name',
+        'description',
+        'image',
+        'price',
+        'category_id',
+        'expire_at',
+        'expire_soon',
+        'shop_id'
+    ];
+
     public $guarded = ['id'];
 
     public function getRouteKeyName()
@@ -26,5 +37,10 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function product_discount()
+    {
+        return $this->hasMany(ProductDiscount::class, 'product_id');
     }
 }

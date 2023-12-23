@@ -10,6 +10,7 @@ use App\Http\Requests\ProductsListRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\ProductDiscount;
 
 class ProductController extends Controller
 {
@@ -46,6 +47,17 @@ class ProductController extends Controller
     {
         $product = Product::create($request->all());
 
+        foreach ($request->validated('product_discounts') as $discount) {
+            $discountData = [
+                'good_count_from' => $discount['good_count_from'],
+                'good_count_to' => $discount['good_count_to'],
+                'percent' => $discount['percent'],
+                'price' => $discount['price'],
+                'product_id' => $product->id
+            ];
+            ProductDiscount::create($discountData);
+        }
+
         return Response::message('product.messages.product_successfuly_created')
             ->data(new ProductResource($product))
             ->send();
@@ -76,7 +88,22 @@ class ProductController extends Controller
     {
         $product->update($request->all());
 
-        return Response::message('product.messages.product_successfuly_updated')->send();
+        ProductDiscount::where('product_id', $product->id)->delete();
+
+        foreach ($request->validated('product_discounts') as $discount) {
+            $discountData = [
+                'good_count_from' => $discount['good_count_from'],
+                'good_count_to' => $discount['good_count_to'],
+                'percent' => $discount['percent'],
+                'price' => $discount['price'],
+                'product_id' => $product->id
+            ];
+            ProductDiscount::create($discountData);
+        }
+
+        return Response::message('product.messages.product_successfuly_updated')
+            ->data(new ProductResource($product))
+            ->send();
     }
 
     /**
