@@ -35,6 +35,10 @@ class RoleController extends Controller
     {
         $role = Role::create(['name' => $request->name]);
 
+        if ($request->permissions and is_array($request->permissions)) {
+            $role->givePermissionTo($request->permissions);
+        }
+
         return Response::message('Role created successfully')->data(new RoleResource($role))->send();
     }
 
@@ -52,6 +56,10 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role)
     {
         $role->update($request->all());
+
+        if ($request->permissions and is_array($request->permissions)) {
+            $role->syncPermissions($request->permissions);
+        }
 
         return Response::message('Role updated successfully')->send();
     }

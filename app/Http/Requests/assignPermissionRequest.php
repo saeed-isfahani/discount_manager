@@ -31,7 +31,7 @@ class assignPermissionRequest extends FormRequest
                 'required',
                 'string',   // input must be of type string
                 'distinct', // members of the array must be unique
-                'min:3'     // each string must have min 3 chars
+                'exists:permissions,name'     // each string must exist in specific table field
             ]
         ];
     }
