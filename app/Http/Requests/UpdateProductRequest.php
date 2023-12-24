@@ -23,14 +23,27 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:5,max:100',
-            'description' => 'required|string',
+            'description' => 'required|string|max:500',
             'image' => 'nullable|string',
             'price' => 'required|numeric',
-            'min_price' => 'numeric',
-            'max_price' => 'numeric',
             'category_id' => 'required|exists:categories,id',
             'expire_at' => 'nullable|date',
-            'expire_soon' => 'nullable|boolean'
+            'expire_soon' => 'nullable|boolean',
+            'shop_id' => 'required|exists:shops,id',
+            "product_discounts"    => [
+                'required',
+                'array', // input must be an array
+                'min:1'  // there must be three members in the array
+            ],
+            "product_discounts.*"    => [
+                'required',
+                'array', // input must be an array
+                'size:4'  // there must be three members in the array
+            ],
+            "product_discounts.*.good_count_from"  => 'required|numeric',
+            "product_discounts.*.good_count_to"  => 'required|numeric',
+            "product_discounts.*.percent"  => 'required|numeric',
+            "product_discounts.*.price"  => 'required|numeric',
         ];
     }
 }
