@@ -47,6 +47,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
         Route::patch('shops/{shop}/activate', [ShopController::class, 'activate']);
         Route::patch('shops/{shop}/deactivate', [ShopController::class, 'deactivate']);
+        Route::get('shops/{shop}/products', [ShopController::class, 'products']);
         Route::resource('shops', ShopController::class)->except(['create', 'edit']);
         Route::resource('categories', CategoriesController::class);
         Route::resource('users', UserController::class)->only(['index', 'show', 'update']);
