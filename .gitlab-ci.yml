@@ -13,6 +13,8 @@ stages:          # List of stages for jobs, and their order of execution
   - internal
   - shared
 
+.rules-push: &push
+   - if: $CI_PIPELINE_SOURCE == "push"
 
 build-job:   
   environment: development    # This job runs in the build stage, which runs first.
@@ -25,7 +27,7 @@ build-job:
   tags:
     *tags
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+    *push
 
 deploy-job:
         # This job runs in the deploy stage.
@@ -41,7 +43,7 @@ deploy-job:
   tags:
     *tags
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+    *push
 
 seed-job:
         # This job runs in the deploy stage.
@@ -71,7 +73,7 @@ release-job:
   tags:
     *tags
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+    *push
   
 
 
