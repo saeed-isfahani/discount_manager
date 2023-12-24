@@ -26,7 +26,8 @@ class PaginateRequest extends FormRequest
         return [
             'per_page' => ['nullable', 'integer', 'min:1'],
             'q' => ['nullable', 'string', 'max:30'],
-            'date' => ['nullable', 'date'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date'],
             'status' => ['nullable', new Enum(ShopStatusEnum::class)],
         ];
     }

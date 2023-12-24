@@ -54,22 +54,33 @@ class LoginController extends Controller implements LoginControllerInterface
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
-        $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($request->mobile)->first();
-        if (!$lastVerificationRequest) {
-            throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
+        if ($user->password) {
+            $credentials = [
+                'mobile' => $request->mobile,
+                'password' => $request->password,
+                'status' => UserStatusEnum::ACTIVE->value,
+            ];
+
+            $token = auth()->attempt($credentials);
+        } else {
+            $lastVerificationRequest = VerificationRequest::latestValidLoginRequestByMobile($request->mobile)->first();
+            if (!$lastVerificationRequest) {
+                throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
+            }
+
+            $lastVerificationRequest->increment('attempts');
+
+            if ($lastVerificationRequest->code != $request->code) {
+                throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
+            }
+
+            $lastVerificationRequest->update([
+                'veriffication_at' => now(),
+            ]);
+
+            $token = JWTAuth::fromUser($user);
         }
 
-        $lastVerificationRequest->increment('attempts');
-
-        if ($lastVerificationRequest->code != $request->code) {
-            throw new BadRequestHttpException('auth.messages.mobile_or_code_wrong_or_code_expired');
-        }
-
-        $lastVerificationRequest->update([
-            'veriffication_at' => now(),
-        ]);
-
-        $token = JWTAuth::fromUser($user);
         if (!$token) {
             throw new UnauthorizedException('UnauthorizedException');
         }
@@ -81,7 +92,8 @@ class LoginController extends Controller implements LoginControllerInterface
 
     public function sendVerify(LoginSendVerifyRequest $request)
     {
-        if (!$this->userRepository->exists([['mobile', '=', $request->mobile]])) {
+        $user = $this->userRepository->findWhere([['mobile', '=', $request->mobile]], true);
+        if (!$user) {
             return Response::status(404)->message('auth.messages.this_user_is_not_registered_please_use_the_registration_tab')->send();
         }
 
@@ -97,7 +109,14 @@ class LoginController extends Controller implements LoginControllerInterface
 
         VerificationCodeSender::dispatch($request->mobile, VerificationRequestProviderEnum::KAVEHNEGAR, VerificationRequestTargetEnum::LOGIN);
 
-        return Response::status(200)->message('auth.messages.code_was_sent')->send();
+        $data = '';
+        if ($user->password) {
+            $data = [
+                'has_password' => 1
+            ];
+        }
+
+        return Response::status(200)->message('auth.messages.code_was_sent')->data($data)->send();
     }
 
     public function logout()

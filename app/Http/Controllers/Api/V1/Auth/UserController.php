@@ -16,17 +16,17 @@ class UserController extends Controller
     public function index(PaginateRequest $request)
     {
         $users = new User();
-        if ($request->q) {
-            $users = $users->where('full_name', 'LIKE', '%' . $request->q . '%');
+        if ($request->validated('q')) {
+            $users = $users->where('full_name', 'LIKE', '%' . $request->validated('q') . '%');
         }
-        if ($request->status) {
-            $users = $users->where('status', $request->status);
+        if ($request->validated('status')) {
+            $users = $users->where('status', $request->validated('status'));
         }
-        if ($request->date) {
-            $users = $users->whereDate('created_at', $request->date);
+        if ($request->validated('start_date') and $request->validated('end_date')) {
+            $users = $users->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
         }
 
-        $users = $users->orderBy('updated_at', 'DESC')->paginate($request->per_page ?? 5);
+        $users = $users->orderBy('updated_at', 'DESC')->paginate($request->validated('per_page') ?? 5);
 
         return Response::message('user.messages.user_list_found_successfully')
             ->data(new UserCollection($users))

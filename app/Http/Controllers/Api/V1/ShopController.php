@@ -25,17 +25,17 @@ class ShopController extends Controller
     public function index(PaginateRequest $request)
     {
         $shops = new Shop;
-        if ($request->q) {
-            $shops = $shops->where('title', 'LIKE', '%' . $request->q . '%');
+        if ($request->validated('q')) {
+            $shops = $shops->where('title', 'LIKE', '%' . $request->validated('q') . '%');
         }
-        if ($request->status) {
-            $shops = $shops->where('status', $request->status);
+        if ($request->validated('status')) {
+            $shops = $shops->where('status', $request->validated('status'));
         }
-        if ($request->date) {
-            $shops = $shops->whereDate('created_at', $request->date);
+        if ($request->validated('start_date') and $request->validated('end_date')) {
+            $shops = $shops->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
         }
 
-        $shops = $shops->paginate($request->per_page ?? 5);
+        $shops = $shops->paginate($request->validated('per_page') ?? 5);
 
         return Response::message('shop.messages.shop_list_found_successfully')
             ->data(new ShopCollection($shops))
