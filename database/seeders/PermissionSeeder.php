@@ -31,7 +31,7 @@ class PermissionSeeder extends Seeder
         'Profile'
     ];
 
-    private string $defaultRole = 'Super Admin';
+    private string $defaultRole = 'Default Role';
 
     /**
      * Run the database seeds.

@@ -22,7 +22,18 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'unique:Spatie\Permission\Models\Role|string|min:5,max:50'
+            'name' => 'unique:Spatie\Permission\Models\Role|string|min:5,max:50',
+            "permissions"    => [
+                'required',
+                'array', // input must be an array
+                'min:1'  // there must be three members in the array
+            ],
+            "permissions.*"  => [
+                'required',
+                'string',   // input must be of type string
+                'distinct', // members of the array must be unique
+                'exists:permissions,name'     // each string must exist in specific table field
+            ]
         ];
     }
 }
