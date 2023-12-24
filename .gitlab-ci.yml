@@ -47,7 +47,7 @@ deploy-job:
 
 seed-job:
         # This job runs in the deploy stage.
-  stage: deploy  # It only runs when job in build-job stage completes successfully.
+  stage: deploy  # It only runs when you click on Run Pipeline.
   environment: development
   script:
     - echo "Seeding the database..."
