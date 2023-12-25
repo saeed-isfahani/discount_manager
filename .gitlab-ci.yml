@@ -22,7 +22,10 @@ include:
   - shared
 
 .rules-push: &push
-   - if: $CI_PIPELINE_SOURCE == "push"
+  - if: $CI_PIPELINE_SOURCE == "push"
+
+.rules-web: &web
+  - if: $CI_PIPELINE_SOURCE == "web"
 
 build-job:   
   environment: development    # This job runs in the build stage, which runs first.
@@ -69,7 +72,7 @@ seed-job:
   tags:
     *tags
   rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
+    *web
   
 release-job:
   # This job runs in the release stage which does the release.
