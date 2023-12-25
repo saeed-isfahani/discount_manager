@@ -2,7 +2,6 @@ workflow:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && ($CI_COMMIT_BRANCH == "develop")
       when: always
-    - when: never
    
 stages:          # List of stages for jobs, and their order of execution
   - build
@@ -44,9 +43,8 @@ sast:
   stage: test
   tags:
     *docker
-  
   rules:
-    *push
+    - if: $CI_JOB_NAME != "sast" && $CI_PIPELINE_SOURCE == "push"
 
 seed-job:
         # This job runs in the deploy stage.
