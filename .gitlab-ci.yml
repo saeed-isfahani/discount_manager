@@ -56,8 +56,10 @@ deploy-job:
     - echo "Application successfully deployed."
   needs: 
     - build-job
+    - sast
   tags:
     *tags
+  
   rules:
     *push
 
