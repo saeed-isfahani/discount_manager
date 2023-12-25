@@ -7,8 +7,8 @@ workflow:
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
-  - deploy
   - release
+  - deploy
 
 include:
   - template: Security/SAST.gitlab-ci.yml
@@ -44,21 +44,6 @@ sast:
   stage: test
   tags:
     *docker
-
-deploy-job:
-        # This job runs in the deploy stage.
-  stage: deploy  # It only runs when job in build-job stage completes successfully.
-  environment: development
-  script:
-    - echo "Deploying application..."
-    - docker compose -f /app/discount/backend/docker-compose.yml up -d 
-    - docker exec -i discount php artisan migrate
-    - echo "Application successfully deployed."
-  needs: 
-    - build-job
-    - sast
-  tags:
-    *tags
   
   rules:
     *push
@@ -87,11 +72,28 @@ release-job:
     name: 'Discount v1.$CI_PIPELINE_IID'
     tag_name: 'v1.$CI_PIPELINE_IID'
   needs:
-    - deploy-job
+    - semgrep-sast
+    - phpcs-security-audit-sast
+    - nodejs-scan-sast
   tags:
     *tags
   rules:
     *push
+
+deploy-job:
+        # This job runs in the deploy stage.
+  stage: deploy  # It only runs when job in build-job stage completes successfully.
+  environment: development
+  script:
+    - echo "Deploying application..."
+    - docker compose -f /app/discount/backend/docker-compose.yml up -d 
+    - docker exec -i discount php artisan migrate
+    - echo "Application successfully deployed."
+  needs: 
+    - build-job
+    - release-job
+  tags:
+    *tags
   
 
 
