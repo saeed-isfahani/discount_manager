@@ -6,8 +6,16 @@ workflow:
    
 stages:          # List of stages for jobs, and their order of execution
   - build
+  - test
   - deploy
   - release
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+.tags-docker: &docker
+  - docker
+  - shared
 
 .tags-global: &tags
   - internal
@@ -28,6 +36,11 @@ build-job:
     *tags
   rules:
     *push
+
+sast:
+  stage: test
+  tags:
+    *docker
 
 deploy-job:
         # This job runs in the deploy stage.
