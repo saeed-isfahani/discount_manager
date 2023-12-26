@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Policies\CategoryPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -25,9 +26,9 @@ class ShopResource extends JsonResource
             'uuid' => $this->uuid,
             'location' => $this->location,
             //
-            'category' => $this->category,
-            'province' => $this->province,
-            'city' => $this->city,
+            'category' => new CategoryResource($this->category),
+            'province' => new ProvinceCityResource($this->province),
+            'city' => new ProvinceCityResource($this->city),
             'owner' => new UserResource($this->owner),
             'status' => $this->status,
             //
