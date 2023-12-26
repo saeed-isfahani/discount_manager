@@ -54,6 +54,7 @@ Route::prefix('v1')->group(function () {
         Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
         Route::patch('roles/{role}/assign-permission', [RoleController::class, 'assignPermission']);
         Route::resource('roles', RoleController::class)->except(['create']);
+        Route::get('products/most-visited', [ProductController::class, 'mostVisited'])->name('products.mostvisited');
         Route::resource('products', ProductController::class)->except(['create', 'edit']);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');

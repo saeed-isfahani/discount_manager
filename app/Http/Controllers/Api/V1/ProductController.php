@@ -68,6 +68,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->increment('visit');
         return Response::message('product.messages.product_successfuly_founded')
             ->data(new ProductResource($product))
             ->send();
@@ -114,5 +115,14 @@ class ProductController extends Controller
         $product->delete();
 
         return Response::message('product.messages.product_successfuly_deleted')->send();
+    }
+
+    public function mostVisited()
+    {
+        $products = Product::with('shop')->orderBy('visit', 'DESC')->get();
+
+        return Response::message('general.messages.successfull')
+            ->data(new ProductCollection($products))
+            ->send();
     }
 }

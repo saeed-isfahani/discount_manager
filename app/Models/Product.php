@@ -43,4 +43,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductDiscount::class, 'product_id');
     }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }
