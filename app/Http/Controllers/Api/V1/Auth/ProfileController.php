@@ -6,6 +6,7 @@ use App\Contracts\Controller\Api\V1\Auth\ProfileControllerInterface;
 use App\Http\Controllers\Controller;
 use App\Facades\Response;
 use App\Http\Requests\Profile\EditProfileRequest;
+use App\Http\Resources\UserResource;
 
 class ProfileController extends Controller implements ProfileControllerInterface
 {
@@ -16,7 +17,7 @@ class ProfileController extends Controller implements ProfileControllerInterface
      */
     public function getMe()
     {
-        return Response::message('auth.messages.your_account_information_has_been_found')->data(auth()->user())->send();
+        return Response::message('auth.messages.your_account_information_has_been_found')->data(new UserResource(auth()->user()))->send();
     }
 
     public function edit(EditProfileRequest $profile)
