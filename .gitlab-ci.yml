@@ -31,7 +31,6 @@ build-job:
   stage: build
   script:
     - echo "Building the image ..."
-    #- mc cp discount/discount/backend/.env /app/discount/backend/env/
     - cat $ENV_FILE > $ENV_PATH
     - docker build --build-arg NODE_ENV=development -t discount:v1.$CI_PIPELINE_IID -t discount:latest .
     - echo "Building complete."  
