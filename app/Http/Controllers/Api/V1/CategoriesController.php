@@ -47,7 +47,6 @@ class CategoriesController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-
         $category->update($request->all());
 
         return Response::message('category updated successfully')->send();
