@@ -29,6 +29,7 @@ class PaginateRequest extends FormRequest
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
             'status' => ['nullable', new Enum(ShopStatusEnum::class)],
+            'role' => ['nullable', 'exists:roles,name'],
         ];
     }
 }
