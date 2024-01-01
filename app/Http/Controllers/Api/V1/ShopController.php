@@ -9,8 +9,10 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\UploadShopLogoRequest;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ShopCollection;
 use App\Http\Resources\ShopResource;
+use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\UnauthorizedException;
@@ -141,6 +143,19 @@ class ShopController extends Controller
         ]);
         return Response::message('general.messages.successfull')
             ->data(new ShopResource($shop))
+            ->send();
+    }
+
+    public function products(PaginateRequest $request, Shop $shop)
+    {
+        $products = Product::where('shop_id', $shop->id);
+
+        if ($request->validated('q')) {
+            $products = $products->where('name', 'LIKE', '%' . $request->validated('q') . '%');
+        }
+
+        return Response::message('general.messages.successfull')
+            ->data(new ProductCollection($products->get()))
             ->send();
     }
 }
