@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Exceptions\BadRequestException;
 use App\Facades\Response;
 use App\Http\Requests\GetRoleUsersRequest;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Resources\RoleCollection;
 use App\Http\Resources\RoleResource;
-use App\Http\Resources\UserCollection;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\assignPermissionRequest;
+use App\Http\Resources\UserWithRoleCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -81,16 +80,16 @@ class RoleController extends Controller
         if ($request->validated('role')) {
             $usersQuery = $usersQuery->role($request->validated('role'));
         }
-        if ($request->validated('user')) {
+        if ($request->validated('q')) {
             $usersQuery = $usersQuery->where(function ($query, $request) {
-                return $query->where('full_name', 'LIKE', '%' . $request->validated('user') . '%')
-                    ->orWhere('email', 'LIKE', '%' . $request->validated('user') . '%');
+                return $query->where('full_name', 'LIKE', '%' . $request->validated('q') . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->validated('q') . '%');
             });
         }
 
         $users = $usersQuery->paginate($request->per_page ?? 5);
 
-        return Response::message('User with roles founded successfully')->data(new UserCollection($users))->send();
+        return Response::message('User with roles founded successfully')->data(new UserWithRoleCollection($users))->send();
     }
 
     public function assignPermission(Role $role, assignPermissionRequest $request)

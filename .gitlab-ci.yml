@@ -2,26 +2,36 @@ workflow:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && ($CI_COMMIT_BRANCH == "develop")
       when: always
-    - when: never
    
 stages:          # List of stages for jobs, and their order of execution
   - build
-  - deploy
+  - test
   - release
+  - deploy
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+.tags-docker: &docker
+  - docker
+  - shared
 
 .tags-global: &tags
   - internal
   - shared
 
 .rules-push: &push
-   - if: $CI_PIPELINE_SOURCE == "push"
+  - if: $CI_PIPELINE_SOURCE == "push"
+
+.rules-web: &web
+  - if: $CI_PIPELINE_SOURCE == "web"
 
 build-job:   
   environment: development    # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Building the image ..."
-    - mc cp discount/discount/backend/.env /app/discount/backend/env/
+    - cat $ENV_FILE > $ENV_PATH
     - docker build --build-arg NODE_ENV=development -t discount:v1.$CI_PIPELINE_IID -t discount:latest .
     - echo "Building complete."  
   tags:
@@ -29,21 +39,12 @@ build-job:
   rules:
     *push
 
-deploy-job:
-        # This job runs in the deploy stage.
-  stage: deploy  # It only runs when job in build-job stage completes successfully.
-  environment: development
-  script:
-    - echo "Deploying application..."
-    - docker compose -f /app/discount/backend/docker-compose.yml up -d 
-    - docker exec -i discount php artisan migrate
-    - echo "Application successfully deployed."
-  needs: 
-    - build-job
+sast:
+  stage: test
   tags:
-    *tags
+    *docker
   rules:
-    *push
+    - if: $CI_JOB_NAME != "sast" && $CI_PIPELINE_SOURCE == "push"
 
 seed-job:
         # This job runs in the deploy stage.
@@ -56,7 +57,7 @@ seed-job:
   tags:
     *tags
   rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
+    *web
   
 release-job:
   # This job runs in the release stage which does the release.
@@ -69,11 +70,28 @@ release-job:
     name: 'Discount v1.$CI_PIPELINE_IID'
     tag_name: 'v1.$CI_PIPELINE_IID'
   needs:
-    - deploy-job
+    - semgrep-sast
+    - phpcs-security-audit-sast
+    - nodejs-scan-sast
   tags:
     *tags
   rules:
     *push
+
+deploy-job:
+        # This job runs in the deploy stage.
+  stage: deploy  # It only runs when job in build-job stage completes successfully.
+  environment: development
+  script:
+    - echo "Deploying application..."
+    - docker compose -f $COMPOSE_PATH up -d 
+    - docker exec -i discount php artisan migrate
+    - echo "Application successfully deployed."
+  needs: 
+    - build-job
+    - release-job
+  tags:
+    *tags
   
 
 

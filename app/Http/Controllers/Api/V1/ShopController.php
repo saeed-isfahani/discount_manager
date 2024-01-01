@@ -10,9 +10,11 @@ use App\Http\Requests\ShopCountRequest;
 use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\UploadShopLogoRequest;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ShopCollection;
 use App\Http\Resources\ShopResource;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -169,6 +171,18 @@ class ShopController extends Controller
 
         return Response::message('general.messages.successfull')
             ->data($shopCount)
+    }
+
+    public function products(PaginateRequest $request, Shop $shop)
+    {
+        $products = Product::where('shop_id', $shop->id);
+
+        if ($request->validated('q')) {
+            $products = $products->where('name', 'LIKE', '%' . $request->validated('q') . '%');
+        }
+
+        return Response::message('general.messages.successfull')
+            ->data(new ProductCollection($products->get()))
             ->send();
     }
 }
