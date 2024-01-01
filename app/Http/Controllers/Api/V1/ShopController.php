@@ -171,6 +171,7 @@ class ShopController extends Controller
 
         return Response::message('general.messages.successfull')
             ->data($shopCount)
+            ->send();
     }
 
     public function products(PaginateRequest $request, Shop $shop)
