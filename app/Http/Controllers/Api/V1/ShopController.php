@@ -6,14 +6,17 @@ use App\Enums\Shop\ShopStatusEnum;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
+use App\Http\Requests\ShopCountRequest;
 use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Http\Requests\UploadShopLogoRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ShopCollection;
 use App\Http\Resources\ShopResource;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Shop;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -144,6 +147,30 @@ class ShopController extends Controller
         return Response::message('general.messages.successfull')
             ->data(new ShopResource($shop))
             ->send();
+    }
+
+    public function shopCount(ShopCountRequest $request)
+    {
+        $shopModel = new Shop;
+        if ($request->status <> 'all') {
+            $shopModel = $shopModel::where('status', $request->status);
+        }
+
+        $shopCount = $shopModel->count();
+        return Response::message('general.messages.successfull')
+            ->data($shopCount)
+            ->send();
+    }
+
+    public function shopCountByCategory()
+    {
+        $shopCount = Category::leftJoin('shops', 'categories.id', '=', 'shops.category_id')
+            ->select('categories.name as category_name', DB::raw('COUNT(shops.id) as shop_count'))
+            ->groupBy('categories.id', 'categories.name')
+            ->get();
+
+        return Response::message('general.messages.successfull')
+            ->data($shopCount)
     }
 
     public function products(PaginateRequest $request, Shop $shop)

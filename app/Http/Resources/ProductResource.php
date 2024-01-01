@@ -23,7 +23,9 @@ class ProductResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'expire_at' => $this->expire_at,
             'expire_soon' => $this->expire_soon,
-            'product_discounts' => new ProductDiscountCollection($this->product_discount)
+            'product_discounts' => new ProductDiscountCollection($this->product_discount),
+            'visit' => $this->visit,
+            'shop' => $this->shop->title ?? ''
         ];
     }
 }

@@ -31,6 +31,11 @@ class Shop extends Model
         return $this->belongsTo(ProvinceCity::class);
     }
 
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'uuid';
