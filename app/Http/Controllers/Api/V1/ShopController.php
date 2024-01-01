@@ -39,6 +39,15 @@ class ShopController extends Controller
         if ($request->validated('start_date') and $request->validated('end_date')) {
             $shops = $shops->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
         }
+        if ($request->validated('city')) {
+            $shops = $shops->where('city_id', $request->validated('city'));
+        }
+        if ($request->validated('province')) {
+            $shops = $shops->where('province_id', $request->validated('province'));
+        }
+        if ($request->validated('category')) {
+            $shops = $shops->where('category_id', $request->validated('category'));
+        }
 
         $shops = $shops->paginate($request->validated('per_page') ?? 5);
 
@@ -180,6 +189,10 @@ class ShopController extends Controller
 
         if ($request->validated('q')) {
             $products = $products->where('name', 'LIKE', '%' . $request->validated('q') . '%');
+        }
+
+        if ($request->validated('category')) {
+            $products = $products->where('category_id', $request->validated('category'));
         }
 
         return Response::message('general.messages.successfull')
