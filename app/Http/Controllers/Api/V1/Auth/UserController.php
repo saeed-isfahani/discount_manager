@@ -25,6 +25,9 @@ class UserController extends Controller
         if ($request->validated('start_date') and $request->validated('end_date')) {
             $users = $users->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
         }
+        if ($request->validated('role')) {
+            $users = $users->role($request->validated('role'));
+        }
 
         $users = $users->orderBy('updated_at', 'DESC')->paginate($request->validated('per_page') ?? 5);
 
