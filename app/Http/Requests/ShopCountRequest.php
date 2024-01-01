@@ -22,7 +22,7 @@ class ShopCountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|string|in:all,active,deactive,pending'
+            'status' => 'string|in:all,active,deactive,pending'
         ];
     }
 }

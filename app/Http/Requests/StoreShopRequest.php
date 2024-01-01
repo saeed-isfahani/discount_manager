@@ -33,6 +33,7 @@ class StoreShopRequest extends FormRequest
             'category_id' => ['required', Rule::exists('categories', 'id')],
             'location' => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
             'address' => ['required'],
+            'owner_id' => [Rule::exists('users', 'id')],
         ];
     }
 }

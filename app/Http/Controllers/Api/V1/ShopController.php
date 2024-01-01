@@ -52,7 +52,12 @@ class ShopController extends Controller
      */
     public function store(StoreShopRequest $request)
     {
-        $shop = auth()->user()->shops()->create($request->merge(['owner_id' => auth()->user()->id])->all());
+        if ($request->validated('owner_id')) {
+            $shopData = $request->validated();
+        } else {
+            $shopData = $request->merge(['owner_id' => auth()->user()->id])->validated();
+        }
+        $shop = auth()->user()->shops()->create($shopData);
 
         return Response::message('shop.messages.shop_successfuly_created')
             ->data(new ShopResource($shop))
@@ -86,7 +91,13 @@ class ShopController extends Controller
             throw new UnauthorizedException();
         }
 
-        $result = $shop->update($request->merge(['owner_id' => auth()->user()->id])->all());
+        if ($request->validated('owner_id')) {
+            $shopData = $request->validated();
+        } else {
+            $shopData = $request->merge(['owner_id' => auth()->user()->id])->validated();
+        }
+
+        $result = $shop->update($shopData);
         if ($result) {
             return Response::message('shop.messages.shop_successfuly_updated')
                 ->data(new ShopResource($shop))
@@ -149,16 +160,19 @@ class ShopController extends Controller
             ->send();
     }
 
-    public function shopCount(ShopCountRequest $request)
+    public function shopCount()
     {
         $shopModel = new Shop;
-        if ($request->status <> 'all') {
-            $shopModel = $shopModel::where('status', $request->status);
-        }
 
-        $shopCount = $shopModel->count();
+        $allShopsCount = $shopModel->count();
+        $shopCountResult = $shopModel->select(DB::raw('status, COUNT(id) as cnt'))
+            ->groupBy('status')
+            ->get();
+
+        $shopCountResult = $shopCountResult->push(['status' => 'all', 'cnt' => $allShopsCount]);
+
         return Response::message('general.messages.successfull')
-            ->data($shopCount)
+            ->data($shopCountResult)
             ->send();
     }
 
@@ -168,6 +182,18 @@ class ShopController extends Controller
             ->select('categories.name as category_name', DB::raw('COUNT(shops.id) as shop_count'))
             ->groupBy('categories.id', 'categories.name')
             ->get();
+
+        return Response::message('general.messages.successfull')
+            ->data($shopCount)
+            ->send();
+    }
+
+    public function shopCountByMonth()
+    {
+        $shopModel = new Shop;
+
+        $shopCount = $shopModel->select(DB::raw('MONTHNAME(created_at) month, COUNT(id) as cnt'))
+            ->groupBy('month')->get();
 
         return Response::message('general.messages.successfull')
             ->data($shopCount)
