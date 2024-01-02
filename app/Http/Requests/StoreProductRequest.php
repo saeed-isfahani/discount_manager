@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
             'category_id' => 'required|exists:categories,id',
             'expire_at' => 'nullable|date',
             'expire_soon' => 'nullable|boolean',
-            'shop_id' => 'required|exists:shops,unique_id',
+            'shop_id' => 'required|exists:shops,uuid',
             "product_discounts"    => [
                 'required',
                 'array', // input must be an array
