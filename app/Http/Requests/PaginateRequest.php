@@ -30,6 +30,9 @@ class PaginateRequest extends FormRequest
             'end_date' => ['nullable', 'date'],
             'status' => ['nullable', new Enum(ShopStatusEnum::class)],
             'role' => ['nullable', 'exists:roles,name'],
+            'city' => ['nullable', 'integer', 'exists:province_cities,id'],
+            'province' => ['nullable', 'integer', 'exists:province_cities,id'],
+            'category' => ['nullable', 'integer', 'exists:categories,id'],
         ];
     }
 }
