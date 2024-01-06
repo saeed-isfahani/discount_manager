@@ -23,7 +23,7 @@ class UserController extends Controller
             $users = $users->where('status', $request->validated('status'));
         }
         if ($request->validated('start_date') and $request->validated('end_date')) {
-            $users = $users->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
+            $users = $users->whereBetween('created_at', [$request->validated('start_date'), $request->validated('end_date')]);
         }
         if ($request->validated('role')) {
             $users = $users->role($request->validated('role'));
