@@ -11,6 +11,7 @@ use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductDiscount;
+use App\Models\Shop;
 
 class ProductController extends Controller
 {
@@ -45,6 +46,8 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+        $shop = Shop::where('uuid', $request->shop_id)->first();
+        $request['shop_id'] = $shop->id;
         $product = Product::create($request->all());
 
         foreach ($request->validated('product_discounts') as $discount) {
