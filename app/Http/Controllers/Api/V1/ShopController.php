@@ -37,7 +37,7 @@ class ShopController extends Controller
             $shops = $shops->where('status', $request->validated('status'));
         }
         if ($request->validated('start_date') and $request->validated('end_date')) {
-            $shops = $shops->whereBetween('created_at', $request->validated('start_date'), $request->validated('end_date'));
+            $shops = $shops->whereBetween('created_at', [$request->validated('start_date'), $request->validated('end_date')]);
         }
         if ($request->validated('city')) {
             $shops = $shops->where('city_id', $request->validated('city'));
