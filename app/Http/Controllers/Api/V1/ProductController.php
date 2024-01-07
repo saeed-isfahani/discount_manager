@@ -90,6 +90,8 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
+        $shop = Shop::where('uuid', $request->shop_id)->first();
+        $request['shop_id'] = $shop->id;
         $product->update($request->all());
 
         ProductDiscount::where('product_id', $product->id)->delete();
