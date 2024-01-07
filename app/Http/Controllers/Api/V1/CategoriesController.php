@@ -19,14 +19,14 @@ class CategoriesController extends Controller
     {
         $categories = new Category();
         if ($request->q) {
-            $categories = $categories->where('title', 'LIKE', '%' . $request->q . '%');
+            $categories = $categories->where('name', 'LIKE', '%' . $request->q . '%');
         }
         if ($request->date) {
             $categories = $categories->whereDate('created_at', $request->date);
         }
 
         $categories = $categories->paginate($request->per_page ?? 5);
-        
+
         return Response::message('category.messages.category_list_found_successfully')
             ->data(new CategoryCollection($categories))
             ->send();
