@@ -4,16 +4,19 @@ namespace App\Policies;
 
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Gate;
 
 class ProductPolicy
 {
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('List products');
+        return $user->can('list.products');
     }
 
     /**
@@ -21,10 +24,7 @@ class ProductPolicy
      */
     public function view(User $user, Product $product): bool
     {
-        return $user->can('View product')
-            && (
-                $product->owner_id === $user->id
-            );
+        return $user->can('view.product');
     }
 
     /**
@@ -32,7 +32,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('Create product');
+        return $user->can('create.product');
     }
 
     /**
@@ -40,10 +40,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return $user->can('Update product')
-            && (
-                $product->owner_id === $user->id
-            );
+        return $user->can('update.product');
     }
 
     /**
@@ -51,7 +48,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return $user->can('Delete product');
+        return $user->can('delete.product');
     }
 
     /**

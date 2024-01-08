@@ -4,16 +4,19 @@ namespace App\Policies;
 
 use App\Models\Shop;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class ShopPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('List shops');
+        return $user->can('list.shops');
     }
 
     /**
@@ -21,10 +24,7 @@ class ShopPolicy
      */
     public function view(User $user, Shop $shop): bool
     {
-        return $user->can('View shop')
-            && (
-                $shop->owner_id === $user->id
-            );
+        return $user->can('view.shop');
     }
 
     /**
@@ -32,7 +32,7 @@ class ShopPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('Create shop');
+        return $user->can('create.shop');
     }
 
     /**
@@ -40,10 +40,7 @@ class ShopPolicy
      */
     public function update(User $user, Shop $shop): bool
     {
-        return $user->can('Update shop')
-            && (
-                $shop->owner_id === $user->id
-            );
+        return $user->can('update.shop');
     }
 
     /**
@@ -51,7 +48,7 @@ class ShopPolicy
      */
     public function delete(User $user, Shop $shop): bool
     {
-        return $user->can('Delete shop');
+        return $user->can('delete.shop');
     }
 
     /**
@@ -68,5 +65,35 @@ class ShopPolicy
     public function forceDelete(User $user, Shop $shop): bool
     {
         //
+    }
+
+    public function logo(): bool
+    {
+        return false;
+    }
+    
+    public function activateShop(): bool
+    {
+        return false;
+    }
+    
+    public function deactivateShop(): bool
+    {
+        return false;
+    }
+
+    public function shopCount(): bool
+    {
+        return false;
+    }
+
+    public function shopCountByCategory(User $user): bool
+    {
+        return false;
+    }
+
+    public function shopProducts(User $user): bool
+    {
+        return false;
     }
 }

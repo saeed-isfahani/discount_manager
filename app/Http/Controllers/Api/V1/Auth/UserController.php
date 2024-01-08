@@ -13,6 +13,12 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        /*--------- fix policies problem on route resources --------*/
+        $this->authorizeResource(User::class, 'user');
+    }
+
     public function index(PaginateRequest $request)
     {
         $users = new User();

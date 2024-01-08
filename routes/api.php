@@ -35,6 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/register/check-verify', [RegisterController::class, 'checkVerify'])->name('register.checkVerify');
         Route::middleware('auth:api')->group(function () {
             Route::get('/get-me', [ProfileController::class, 'getMe'])->name('profile.getMe');
+            Route::get('/get-permissions', [ProfileController::class, 'getPermissions'])->name('profile.getPermissions');
             Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
             Route::patch('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
             Route::post('/password/set', [PasswordController::class, 'set'])->name('password.set');
@@ -42,24 +43,24 @@ Route::prefix('v1')->group(function () {
         });
     });
     Route::middleware('auth:api')->group(function () {
-        Route::post('shops/{shop}/logo', [ShopController::class, 'logo']);
-        Route::post('/users/{user}/active', [UserController::class, 'active'])->name('user.active');
-        Route::post('/users/{user}/deactive', [UserController::class, 'deactive'])->name('user.deactive');
-        Route::patch('shops/{shop}/activate', [ShopController::class, 'activate']);
-        Route::patch('shops/{shop}/deactivate', [ShopController::class, 'deactivate']);
+        Route::post('shops/{shop}/logo', [ShopController::class, 'shopLogo']);
+        Route::post('/users/{user}/active', [UserController::class, 'activateUser'])->name('user.active');
+        Route::post('/users/{user}/deactive', [UserController::class, 'deactivateUser'])->name('user.deactive');
+        Route::patch('shops/{shop}/activate', [ShopController::class, 'activateShop']);
+        Route::patch('shops/{shop}/deactivate', [ShopController::class, 'deactivateShop']);
         Route::get('shops/shop-count', [ShopController::class, 'shopCount'])->name('shops.shopcount');
         Route::get('shops/shop-count-by-category', [ShopController::class, 'shopCountByCategory'])->name('shops.shopcountbycategory');
         Route::get('shops/shop-count-by-month', [ShopController::class, 'shopCountByMonth'])->name('shops.shopcountbymonth');
-        Route::get('shops/{shop}/products', [ShopController::class, 'products']);
-        Route::resource('shops', ShopController::class)->except(['create', 'edit']);
-        Route::resource('categories', CategoriesController::class);
-        Route::resource('users', UserController::class)->only(['index', 'show', 'update']);
+        Route::get('shops/{shop}/products', [ShopController::class, 'shopProducts']);
+        Route::apiResource('shops', ShopController::class);
+        Route::apiResource('categories', CategoriesController::class);
+        Route::apiResource('users', UserController::class);
         Route::get('permissions', [PermissionController::class, 'index']);
         Route::get('roles/users', [RoleController::class, 'usersWithRoles']);
         Route::patch('roles/{role}/assign-permission', [RoleController::class, 'assignPermission']);
-        Route::resource('roles', RoleController::class)->except(['create']);
+        Route::apiResource('roles', RoleController::class);
         Route::get('products/most-visited', [ProductController::class, 'mostVisited'])->name('products.mostvisited');
-        Route::resource('products', ProductController::class)->except(['create', 'edit']);
+        Route::apiResource('products', ProductController::class);
     });
     Route::get('/provinces', [ProvinceCityController::class, 'provincesList'])->name('provinces.list');
     Route::get('/cities/{province}', [ProvinceCityController::class, 'citiesList'])->name('cities.list');
