@@ -15,6 +15,12 @@ use App\Models\Shop;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        /*--------- fix policies problem on route resources --------*/
+        $this->authorizeResource(Product::class, 'product');
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -3,16 +3,19 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('List users');
+        return $user->can('list.users');
     }
 
     /**
@@ -20,10 +23,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->can('View user')
-            && (
-                $model->owner_id === $user->id
-            );
+        return $user->can('view.user');
     }
 
     /**
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('Create user');
+        return $user->can('create.user');
     }
 
     /**
@@ -39,10 +39,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->can('Update user')
-            && (
-                $model->owner_id === $user->id
-            );
+        return $user->can('update.user');
     }
 
     /**
@@ -50,7 +47,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->can('Delete user');
+        return $user->can('delete.user');
     }
 
     /**

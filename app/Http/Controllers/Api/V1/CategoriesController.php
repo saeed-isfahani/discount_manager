@@ -12,6 +12,11 @@ use App\Models\Category;
 
 class CategoriesController extends Controller
 {
+    public function __construct()
+    {
+        /*--------- fix policies problem on route resources --------*/
+        $this->authorizeResource(Category::class, 'category');
+    }
     /**
      * Display a listing of the resource.
      */

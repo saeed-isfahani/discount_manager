@@ -44,15 +44,15 @@ class RoleSeeder extends Seeder
                     'mobile' => fake()->numerify('989#########')
                 ],
                 'permissions' => [
-                    'List users',
-                    'List products',
-                    'List categories',
-                    'Dashboard',
-                    'Shops',
-                    'Users',
-                    'Products',
-                    'Categories',
-                    'Profile'
+                    'list.users',
+                    'list.products',
+                    'list.categories',
+                    'dashboard',
+                    'shops',
+                    'users',
+                    'products',
+                    'categories',
+                    'profile'
                 ]
             ],
             'Account manager' => [
@@ -67,14 +67,14 @@ class RoleSeeder extends Seeder
                     'mobile' => fake()->numerify('989#########')
                 ],
                 'permissions' => [
-                    'List users',
-                    'List products',
-                    'List categories',
-                    'Dashboard',
-                    'Shops',
-                    'Users',
-                    'Products',
-                    'Categories',
+                    'list.users',
+                    'list.products',
+                    'list.categories',
+                    'dashboard',
+                    'shops',
+                    'users',
+                    'products',
+                    'categories',
                 ]
             ],
             'Shop manager' => [
@@ -89,10 +89,10 @@ class RoleSeeder extends Seeder
                     'mobile' => fake()->numerify('989#########')
                 ],
                 'permissions' => [
-                    'List products',
-                    'Dashboard',
-                    'Shops',
-                    'Products',
+                    'list.products',
+                    'dashboard',
+                    'shops',
+                    'products',
                 ]
             ]
         ];

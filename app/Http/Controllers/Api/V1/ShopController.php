@@ -23,6 +23,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ShopController extends Controller
 {
+    public function __construct()
+    {
+        /*--------- fix policies problem on route resources --------*/
+        $this->authorizeResource(Shop::class, 'shop');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -149,7 +155,7 @@ class ShopController extends Controller
         }
     }
 
-    public function activate(Shop $shop)
+    public function activateShop(Shop $shop)
     {
         $shop->update([
             'status' => ShopStatusEnum::ACTIVE->value,
@@ -159,7 +165,7 @@ class ShopController extends Controller
             ->send();
     }
 
-    public function deactivate(Shop $shop)
+    public function deactivateShop(Shop $shop)
     {
         $shop->update([
             'status' => ShopStatusEnum::DEACTIVE->value,
@@ -209,7 +215,7 @@ class ShopController extends Controller
             ->send();
     }
 
-    public function products(PaginateRequest $request, Shop $shop)
+    public function shopProducts(PaginateRequest $request, Shop $shop)
     {
         $products = Product::where('shop_id', $shop->id);
 

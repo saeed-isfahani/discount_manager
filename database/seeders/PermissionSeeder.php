@@ -18,17 +18,22 @@ class PermissionSeeder extends Seeder
     ];
 
     private array $pluralActions = [
-        'List'
+        'list'
     ];
 
     private array $singularActions = [
-        'View', 'Create', 'Update', 'Delete', 'Excel'
+        'view', 'create', 'update', 'delete', 'excel'
     ];
 
     private array $menuItems = [
-        'Dashboard', 'Shops', 'Users',
-        'Products', 'Categories', 'Roles',
-        'Profile'
+        'dashboard', 'shops', 'users',
+        'products', 'categories', 'roles',
+        'profile', 'shop.logo', 'activate.user',
+        'deactivate.user', 'activate.shop',
+        'deactivate.shop', 'count.shop',
+        'count_by_category.shop', 'count_by_month.shop',
+        'products.shop', 'permissions', 'roles.users',
+        'assign_permission.roles', 'most_visited.products',
     ];
 
     private string $defaultRole = 'Default Role';
@@ -43,12 +48,12 @@ class PermissionSeeder extends Seeder
             $singular = $module;
             foreach ($this->pluralActions as $action) {
                 Permission::firstOrCreate([
-                    'name' => $action . ' ' . $plural
+                    'name' => $action . '.' . $plural
                 ]);
             }
             foreach ($this->singularActions as $action) {
                 Permission::firstOrCreate([
-                    'name' => $action . ' ' . $singular
+                    'name' => $action . '.' . $singular
                 ]);
             }
         }
